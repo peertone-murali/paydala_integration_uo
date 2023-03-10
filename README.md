@@ -5,7 +5,7 @@ This is the reference implementation for integrating the Operator App (mobile), 
 ## Deposit 
 
 Sequence diagram for Deposit flow...
-![](https://github.com/PaydalaInc/paydala_integration_uo/blob/ca8feaad6dd9b44f4850564323f3b40205c1719c/Paydala%20deposit%20flow-Op.svg)
+![](https://github.com/PaydalaInc/paydala_integration_uo/blob/d7003e1f7412b6bea9467569e263fef1e061a9c7/Paydala%20deposit%20flow-Op.svg)
 
 ### Server endpoints
 

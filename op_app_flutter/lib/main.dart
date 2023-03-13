@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:op_app_flutter/src/paydala_webview.dart';
+import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
+// import 'package:op_app_flutter/src/paydala_webview.dart';
 
 void main() => runApp(MyApp());
 
@@ -58,7 +59,7 @@ class WalletHomePage extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => OperatorDepositScreen()));
                 // MaterialPageRoute(
-                //   builder: (context) => PaydalaWebView(
+                //   builder: (context) => PaydalaFlutterWidget(
                 //       title: "Deposit using Paydala",
                 //       url: "https://flutter.dev",
                 //       payload: '{"email" : "john.doe@test.com"}'),
@@ -287,12 +288,13 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PaydalaDepositScreen()
-                        // PaydalaWebView(
-                        //     title: 'Login & withdraw',
-                        //     url: url,
-                        //     payload: '{"email" : "john.doe@test.com"}'),
-                        ),
+                      builder: (context) => // PaydalaDepositScreen()
+                          PaydalaFlutterWidget(
+                              title: 'Paydala Deposit',
+                              url:
+                                  "https://dev-widget.paydala.com/?environment=development",
+                              payload: '{"email" : "john.doe@test.com"}'),
+                    ),
                     // PaydalaDepositScreen()));
                   );
                 }
@@ -399,16 +401,16 @@ class WithdrawScreen extends StatelessWidget {
                 String withdrawalAmount =
                     '10'; // get the withdrawal amount from the text field
                 String url =
-                    'https://example.com/withdraw?amount=$withdrawalAmount'; // construct the URL with the withdrawal amount parameter
+                    "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PaydalaWithdrawScreen()
-                      // PaydalaWebView(
-                      //     title: 'Login & withdraw',
-                      //     url: url,
-                      //     payload: '{"email" : "john.doe@test.com"}'),
-                      ),
+                    builder: (context) => // PaydalaWithdrawScreen()
+                        PaydalaFlutterWidget(
+                            title: 'Login & withdraw',
+                            url: url,
+                            payload: '{"email" : "john.doe@test.com"}'),
+                  ),
                   // PaydalaDepositScreen()));
                 );
               },
@@ -420,3 +422,4 @@ class WithdrawScreen extends StatelessWidget {
     );
   }
 }
+

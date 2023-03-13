@@ -1,3 +1,41 @@
+// import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+// Define the endpoint URL and the data to send in the request body
+const String endpointUrl = 'http://localhost:8080/getSignedCreds';
+
+class SignedCreds {
+  final String creds;
+  final String signature;
+
+  SignedCreds(this.creds, this.signature);
+
+  SignedCreds.fromJson(Map<String, dynamic> json)
+      : creds = json['creds'],
+        signature = json['signature'];
+
+  Map<String, dynamic> toJson() => {
+        'creds': creds,
+        'signature': signature,
+      };
+}
+
+getSignedCreds(String payload) {
+// Make the POST request
+  http.post(Uri.parse(endpointUrl), body: payload).then((response) {
+    if (response.statusCode == 200) {
+      // The API call was successful
+      print(response.body);
+    } else {
+      // There was an error
+      print('Error: ${response.reasonPhrase}');
+    }
+  }).catchError((error) {
+    // There was an error in making the request
+    print('Error: $error');
+  });
+}
+
 class UserTransaction {
   double amount;
   bool canMakeDeposits;

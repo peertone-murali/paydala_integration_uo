@@ -1,0 +1,102 @@
+@startuml Paydala integration
+title Paydala integration steps for deposit
+bottomparticipants
+ 
+fontawesome5regular f0f8 
+participant "Operator App" as OpApp
+participant "Operator portal" as OpPortal
+participant "Operator Backend" as OpBackend
+participant "Paydala Flutter widget" as PaydalaWidget
+participant "Paydala Backend" as PaydalaBackend
+
+skinparam sequenceGroupBackgroundColor red
+
+group Setup webhook
+
+OpPortal->PaydalaBackend:subscribe( {region, url }) 
+activate PaydalaBackend
+OpPortal<--PaydalaBackend:return( {subscription_object} )
+deactivate PaydalaBackend
+
+end
+
+
+group  Deposit flow 
+
+note over OpApp,OpBackend#lightYellow:get payload signed with API key from the \nsigning service running on Op Backend \nusing shared secret
+
+OpApp->OpBackend:getSignedCreds(payload)
+activate OpBackend 
+
+#OpBackend->OpBackend:sign with API key
+
+OpApp<--OpBackend:return(creds,signature)
+deactivate OpBackend
+note over OpPortal #lightYellow:creds is returned as JSON \n{\n   client_id, \n   category_id, \n   region,\n   timeStamp, \n   {payload}\n}\n
+
+create PaydalaWidget
+OpApp->PaydalaWidget:createPaydalaWidget(title, url)
+loop until deposit succeeds
+OpApp->PaydalaWidget:startDepositFlow ({requestId, creds, signature})
+activate PaydalaWidget
+
+PaydalaWidget->PaydalaBackend:identifyPartner({creds})
+activate PaydalaBackend
+PaydalaWidget<--PaydalaBackend:return({partnerDetails}}
+deactivate PaydalaBackend
+
+alt #lightgrey not logged in
+PaydalaWidget->PaydalaBackend:login or continue as guest
+activate PaydalaBackend
+end
+
+PaydalaWidget->PaydalaBackend:deposit({requestId, creds, params})
+PaydalaWidget<--PaydalaBackend:result
+
+OpBackend<-PaydalaBackend:webhookConfirmation({requestId, txnDetails : {email, amount, txnRef}}
+activate OpBackend
+OpBackend-->PaydalaBackend:return(httpStatus=200)
+deactivate OpBackend
+PaydalaWidget<--PaydalaBackend:(guest) logout(httpStatus=200)
+deactivate PaydalaBackend
+OpApp<--PaydalaWidget:result(httpStatus,{txnDetails} or message)
+deactivateafter PaydalaWidget
+expandable− #lightblue process result from startDepositFlow
+alt httpStatus == 400 (message == "Txn in progress" or message == "Connection terminated")
+loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
+OpApp->OpBackend:getTxnStatus( {refType, refId} as payload )
+activate OpBackend
+OpBackend->OpBackend
+OpBackend->OpBackend:checkWebhookConfirmation( {refType, refId} )
+alt #lightPink txnNotConfirmed
+
+OpBackend->PaydalaBackend:getTxnStatus( {refType, txnRef} )
+activate PaydalaBackend
+OpBackend<--PaydalaBackend:result(httpStatus, {txnDetails} or message)
+deactivate PaydalaBackend
+else txnConfirmed
+end
+OpApp<--OpBackend:result(httpStatus=200, {txnDetails} or message)
+deactivate OpBackend
+end 
+else httpStatus == 400 (message = "Deposit failed")
+else httpStatus == 200 (deposit successful)
+
+end
+
+OpApp->PaydalaWidget:destroyPaydalaWidget()
+destroy PaydalaWidget
+
+
+end loop
+
+end
+
+@enduml
+
+
+
+
+
+
+

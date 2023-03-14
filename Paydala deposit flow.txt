@@ -42,9 +42,9 @@ loop until deposit succeeds
 OpApp->PaydalaWidget:startDepositFlow ({requestId, creds, signature})
 activate PaydalaWidget
 
-PaydalaWidget->PaydalaBackend:identifyPartner({creds})
+PaydalaWidget->PaydalaBackend:identifyPartner( {creds} )
 activate PaydalaBackend
-PaydalaWidget<--PaydalaBackend:return({partnerDetails}}
+PaydalaWidget<--PaydalaBackend:return( {partnerDetails} }
 deactivate PaydalaBackend
 
 alt #lightgrey not logged in
@@ -52,17 +52,17 @@ PaydalaWidget->PaydalaBackend:login or continue as guest
 activate PaydalaBackend
 end
 
-PaydalaWidget->PaydalaBackend:deposit({requestId, creds, params})
+PaydalaWidget->PaydalaBackend:deposit( {requestId, creds, params} )
 PaydalaWidget<--PaydalaBackend:result
 
-OpBackend<-PaydalaBackend:webhookConfirmation({requestId, txnDetails : {email, amount, txnRef}}
+OpBackend<-PaydalaBackend:webhookConfirmation( {txnDetails} )\n
 activate OpBackend
 OpBackend-->PaydalaBackend:return(httpStatus=200)
 deactivate OpBackend
 PaydalaWidget<--PaydalaBackend:(guest) logout(httpStatus=200)
 deactivate PaydalaBackend
 note over OpBackend,PaydalaWidget#lightyellow :txnDetails :\n{\n    "result": "partial",\n    "refType": 2,\n    "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002",\n    "timeStamp": "%Y-%m-%d %H:%M:%S.%f",\n    "txnDetails": [\n      {\n        "txnRef": "abcdef",\n        "status": "processing",\n        "currencyId": 1,\n        "amount": 10,\n        "timeStamp": "%Y-%m-%d %H:%M:%S.%f"\n      },\n      ...\n    ]\n}
-OpApp<--PaydalaWidget:result(httpStatus,{txnDetails} or message)
+OpApp<--PaydalaWidget:result(httpStatus, {txnDetails} or message)
 deactivate PaydalaWidget
 expandable−  process result from startDepositFlow
 
@@ -73,8 +73,8 @@ OpApp<-PaydalaWidget
 loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
 OpApp->PaydalaWidget:getLastTxnStatus()
 'activate PaydalaWidget
-PaydalaWidget->PaydalaBackend:getTxnStatus(refType, txnRef)
-PaydalaWidget<-PaydalaBackend:result( txnDetails )
+PaydalaWidget->PaydalaBackend:getTxnStatus( {refType, txnRef} ) 
+PaydalaWidget<-PaydalaBackend:result( {txnDetails} )
 OpApp<-PaydalaWidget:result( flutterTxnDetails )
 'deactivate PaydalaWidget
 
@@ -99,7 +99,7 @@ loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit faile
 OpApp->OpBackend:getTxnStatus( {refType, refId} as payload )
 activate OpBackend
 OpBackend->OpBackend
-OpBackend->OpBackend:checkWebhookConfirmation( {refType, refId} )
+OpBackend->OpBackend:checkWebhookConfirmation( {refType, txnRef} )
 alt #lightPink txnNotConfirmed
 
 OpBackend->PaydalaBackend:getTxnStatus( {refType, txnRef} )

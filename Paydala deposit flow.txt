@@ -32,6 +32,7 @@ activate OpBackend
 
 OpApp<--OpBackend:return(creds,signature)
 deactivate OpBackend
+note over OpBackend#lightYellow:payload could be...\n{\n"firstName": "Joe",\n"middleName": "st.",\n"lastName": "Smith",\n"customerId": "1",\n"email": "john",\n"dob": "10/22/2000",\n"ssl4": "3456",\n"streetAddress": "123 Elm st",\n"addressCity": "Big city",\n"addressState": "Tx",\n"addressZip": "56060",\n"addressCountry": "USA",\n"mobilePh": "4023345676"\n}
 note over OpPortal #lightYellow:creds is returned as JSON \n{\n   client_id, \n   category_id, \n   region,\n   timeStamp, \n   {payload}\n}\n
 
 create PaydalaWidget
@@ -59,9 +60,37 @@ OpBackend-->PaydalaBackend:return(httpStatus=200)
 deactivate OpBackend
 PaydalaWidget<--PaydalaBackend:(guest) logout(httpStatus=200)
 deactivate PaydalaBackend
+note over OpBackend,PaydalaWidget#lightyellow :txnDetails :\n{\n    "result": "partial",\n    "refType": 2,\n    "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002",\n    "timeStamp": "%Y-%m-%d %H:%M:%S.%f",\n    "txnDetails": [\n      {\n        "txnRef": "abcdef",\n        "status": "processing",\n        "currencyId": 1,\n        "amount": 10,\n        "timeStamp": "%Y-%m-%d %H:%M:%S.%f"\n      },\n      ...\n    ]\n}
 OpApp<--PaydalaWidget:result(httpStatus,{txnDetails} or message)
-deactivateafter PaydalaWidget
-expandable− #lightblue process result from startDepositFlow
+deactivate PaydalaWidget
+expandable−  process result from startDepositFlow
+
+expandable− #lightGreen handling deposit result through Paydala Flutter widget (requires active session)
+'alt httpStatus == 400 (message == "Txn in progress" or message == "Connection terminated")
+OpApp->PaydalaWidget
+OpApp<-PaydalaWidget
+loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
+OpApp->PaydalaWidget:getLastTxnStatus()
+'activate PaydalaWidget
+OpApp<-PaydalaWidget:result( flutterTxnDetails )
+'deactivate PaydalaWidget
+
+OpBackend->PaydalaBackend
+activate PaydalaBackend
+OpBackend<--PaydalaBackend
+deactivate PaydalaBackend
+'else 
+'end
+'OpApp<--OpBackend
+deactivate OpBackend
+end 
+else httpStatus == 400 (message = "Deposit failed")
+else httpStatus == 200 (deposit successful)
+end
+
+
+'---handling inside PFW
+expandable− #lightBlue handling deposit result in Operator App (through the getTxnStatus API)
 alt httpStatus == 400 (message == "Txn in progress" or message == "Connection terminated")
 loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
 OpApp->OpBackend:getTxnStatus( {refType, refId} as payload )
@@ -83,6 +112,12 @@ else httpStatus == 400 (message = "Deposit failed")
 else httpStatus == 200 (deposit successful)
 
 end
+end
+'---end 
+end
+
+
+
 
 OpApp->PaydalaWidget:destroyPaydalaWidget()
 destroy PaydalaWidget

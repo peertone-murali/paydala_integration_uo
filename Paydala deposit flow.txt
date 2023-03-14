@@ -34,7 +34,7 @@ activate OpBackend
 OpApp<--OpBackend:return(creds,signature)
 deactivate OpBackend
 
-note over OpPortal #lightYellow:creds is returned as JSON \n{\n   client_id, \n   category_id, \n   region,\n   timeStamp, \n   {payload}\n}\n
+note over OpApp #lightYellow:creds is returned as JSON \n{\n   client_id, \n   category_id, \n   region,\n   timeStamp, \n   {payload}\n}\n
 
 create PaydalaWidget
 OpApp->PaydalaWidget:createPaydalaWidget(title, url)

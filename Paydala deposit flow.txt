@@ -24,6 +24,7 @@ end
 group  Deposit flow 
 
 note over OpApp,OpBackend#lightYellow:get payload signed with API key from the \nsigning service running on Op Backend \nusing shared secret
+note over OpBackend #lightYellow:payload could be...\n{\n"firstName": "John",\n"middleName": "William",\n"lastName": "Deere",\n"customerId": "1",\n"email": "john.deere@test.com",\n"dob": "10/22/2000",\n"ssl4": "3456",\n"streetAddress": "123 Elm st",\n"addressCity": "Big city",\n"addressState": "Tx",\n"addressZip": "56060",\n"addressCountry": "USA",\n"mobilePh": "4023345676"\n}
 
 OpApp->OpBackend:getSignedCreds(payload)
 activate OpBackend 
@@ -32,7 +33,7 @@ activate OpBackend
 
 OpApp<--OpBackend:return(creds,signature)
 deactivate OpBackend
-note over OpBackend#lightYellow:payload could be...\n{\n"firstName": "Joe",\n"middleName": "st.",\n"lastName": "Smith",\n"customerId": "1",\n"email": "john",\n"dob": "10/22/2000",\n"ssl4": "3456",\n"streetAddress": "123 Elm st",\n"addressCity": "Big city",\n"addressState": "Tx",\n"addressZip": "56060",\n"addressCountry": "USA",\n"mobilePh": "4023345676"\n}
+
 note over OpPortal #lightYellow:creds is returned as JSON \n{\n   client_id, \n   category_id, \n   region,\n   timeStamp, \n   {payload}\n}\n
 
 create PaydalaWidget
@@ -72,6 +73,8 @@ OpApp<-PaydalaWidget
 loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
 OpApp->PaydalaWidget:getLastTxnStatus()
 'activate PaydalaWidget
+PaydalaWidget->PaydalaBackend:getTxnStatus(refType, txnRef)
+PaydalaWidget<-PaydalaBackend:result( txnDetails )
 OpApp<-PaydalaWidget:result( flutterTxnDetails )
 'deactivate PaydalaWidget
 

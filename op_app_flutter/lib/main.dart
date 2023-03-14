@@ -101,71 +101,6 @@ class WalletHomePage extends StatelessWidget {
   }
 }
 
-//{"firstname":"Joe","middlename":"st.","lastname":"smith","customer_id":"1","email":"john","dob":"10/22/2000","ssl4":"3456","street_address":"123 Elm st","address_city":"Big city","address_state":"Tx","address_zip":"56060","address_country":"USA","mobile_ph":"4023345676"}
-
-class User {
-  String firstName;
-  String middleName;
-  String lastName;
-  String customerId;
-  String email;
-  String dob;
-  String ssl4;
-  String streetAddress;
-  String addressCity;
-  String addressState;
-  String addressZip;
-  String addressCountry;
-  String mobilePh;
-
-  User(
-    this.firstName,
-    this.middleName,
-    this.lastName,
-    this.customerId,
-    this.email,
-    this.dob,
-    this.ssl4,
-    this.streetAddress,
-    this.addressCity,
-    this.addressState,
-    this.addressZip,
-    this.addressCountry,
-    this.mobilePh,
-  );
-
-  User.fromJson(Map<String, dynamic> json)
-      : firstName = json['firstname'],
-        middleName = json['middlename'],
-        lastName = json['lastname'],
-        customerId = json['customer_id'],
-        email = json['email'],
-        dob = json['dob'],
-        ssl4 = json['ssl4'],
-        streetAddress = json['street_address'],
-        addressCity = json['address_city'],
-        addressState = json['address_state'],
-        addressZip = json['address_zip'],
-        addressCountry = json['address_country'],
-        mobilePh = json['mobile_ph'];
-
-  Map<String, dynamic> toJson() => {
-        'firstname': firstName,
-        'middlename': middleName,
-        'lastname': lastName,
-        'customer_id': customerId,
-        'email': email,
-        'dob': dob,
-        'ssl4': ssl4,
-        'street_address': streetAddress,
-        'address_city': addressCity,
-        'address_state': addressState,
-        'address_zip': addressZip,
-        'address_country': addressCountry,
-        'mobile_ph': mobilePh,
-      };
-}
-
 class PaydalaDepositScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -422,4 +357,3 @@ class WithdrawScreen extends StatelessWidget {
     );
   }
 }
-

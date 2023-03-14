@@ -68,6 +68,8 @@ class User {
   String mobilePh;
   UserTransaction userTransaction;
 
+//{"firstname":"Joe","middlename":"st.","lastname":"smith","customer_id":"1","email":"john","dob":"10/22/2000","ssl4":"3456","street_address":"123 Elm st","address_city":"Big city","address_state":"Tx","address_zip":"56060","address_country":"USA","mobile_ph":"4023345676"}
+
   User(
     this.firstName,
     this.middleName,

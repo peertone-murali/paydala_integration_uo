@@ -5,8 +5,8 @@ import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
-var CLIENT_ID = "client id";
-var SECRET = "secret";
+var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
+var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
 
 String getCurrentTimestamp() {
   var now = DateTime.now();

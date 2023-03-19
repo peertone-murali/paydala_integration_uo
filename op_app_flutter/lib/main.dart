@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
+import 'package:op_app_flutter/src/payload.dart';
+import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/paydala_webview.dart';
 
 void main() => runApp(MyApp());
@@ -115,52 +119,6 @@ class PaydalaDepositScreen extends StatelessWidget {
   }
 }
 
-// class OperatorDepositScreen extends StatefulWidget {
-//   const OperatorDepositScreen({super.key});
-
-//   @override
-//   _OperatorDepositScreenState createState() => _OperatorDepositScreenState();
-// }
-
-// class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
-//   int? _selectedAmount;
-
-//   List<int> _amounts = [10, 20, 50, 100, 200, 500];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Deposit'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             for (int amount in _amounts)
-//               RadioListTile(
-//                 title: Text('\$$amount'),
-//                 value: amount,
-//                 groupValue: _selectedAmount,
-//                 onChanged: (value) {
-//                   setState(() {
-//                     _selectedAmount = value;
-//                   });
-//                 },
-//               ),
-//             SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: () {
-//                 // Add logic for depositing selected amount here
-//               },
-//               child: Text('Deposit'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 class OperatorDepositScreen extends StatefulWidget {
   const OperatorDepositScreen({Key? key});
 
@@ -220,6 +178,8 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
           onPressed: _selectedAmount != null
               ? () {
                   // TODO: Deposit logic
+                  var payload = createPayload();
+                  payload.predefinedAmount.values = 30;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -228,7 +188,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                               title: 'Paydala Deposit',
                               url:
                                   "https://dev-widget.paydala.com/?environment=development",
-                              payload: '{"email" : "john.doe@test.com"}'),
+                              payload: jsonEncode(payload)),
                     ),
                     // PaydalaDepositScreen()));
                   );

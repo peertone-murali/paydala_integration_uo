@@ -2,6 +2,7 @@ import datetime
 import hmac
 import hashlib
 import json
+from . import CLIENT_ID, SECRET_KEY
 
 
 class SignedCreds ():
@@ -14,14 +15,12 @@ class SignedCreds ():
         self.sign()
 
     def sign(self):
-        clientId = '0ec21af214c345648b813ab2b207c1c4'
-        sharedSecret = '2b358500353c46e3b511b7116698c47a'
         timestamp = datetime.datetime.now().strftime(
             '%Y-%m-%d %H:%M:%S.%f')[:-3]
         
         creds_map = {
             "ver" : "1.0",
-            "clientId" : clientId,
+            "clientId" : CLIENT_ID,
             "categoryId" : "1",
             "region" : "USA",
             "timeStamp" : timestamp
@@ -32,13 +31,11 @@ class SignedCreds ():
         self.creds = json.dumps(creds_map)
         print(self.creds)
 
-        self.signature = hmac.new(sharedSecret.encode(), self.creds.encode(), hashlib.sha256).hexdigest()
+        self.signature = hmac.new(SECRET_KEY.encode(), self.creds.encode(), hashlib.sha256).hexdigest()
         return
 
 def get_signature(message : str):
-    clientId = '0ec21af214c345648b813ab2b207c1c4'
-    sharedSecret = '2b358500353c46e3b511b7116698c47a'
-    return hmac.new(sharedSecret.encode(), message.encode(), hashlib.sha256).hexdigest()
+    return hmac.new(SECRET_KEY.encode(), message.encode(), hashlib.sha256).hexdigest()
 
 
 class SignedCredsEncoder(json.JSONEncoder):

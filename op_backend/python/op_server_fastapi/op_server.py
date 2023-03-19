@@ -1,15 +1,19 @@
+
+import sys
 from http.client import HTTPException
 # from urllib.request import Request
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
-from signedcreds import *
 import json
 import logging
 from fastapi import FastAPI, Header, HTTPException
 from hashlib import sha256
 import hmac
 
-API_SECRET_KEY = "your_api_secret_key_here"
+sys.path.append('..')  # Add parent directory to path
+from signedcreds.signedcreds import *
+
+API_SECRET_KEY = SECRET_KEY
 
 app = FastAPI()
 
@@ -40,7 +44,6 @@ async def get_signed_creds(request: Request):
     creds = SignedCreds(payload_str)
     return {"creds":creds.creds, "signature" : creds.signature }
     # return json.dumps(creds, cls=SignedCredsEncoder)
-
 
 
 

@@ -11,6 +11,7 @@ participant "Paydala Backend" as PaydalaBackend
 
 skinparam sequenceGroupBackgroundColor red
 
+entryspacing 1.3
 group Setup webhook
 
 OpPortal->PaydalaBackend:subscribe( {region, url }) 
@@ -64,9 +65,9 @@ deactivate PaydalaBackend
 note over OpBackend,PaydalaWidget#lightyellow :txnDetails :\n{\n    "result": "partial",\n    "refType": 2,\n    "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002",\n    "timeStamp": "%Y-%m-%d %H:%M:%S.%f",\n    "txnDetails": [\n      {\n        "txnRef": "abcdef",\n        "status": "processing",\n        "currencyId": 1,\n        "amount": 10,\n        "timeStamp": "%Y-%m-%d %H:%M:%S.%f"\n      },\n      ...\n    ]\n}
 OpApp<--PaydalaWidget:result(httpStatus, {txnDetails} or message)
 deactivate PaydalaWidget
-expandable−  process result from startDepositFlow
+expandable+  process result from startDepositFlow
 
-expandable− #lightGreen handling deposit result through Paydala Flutter widget (requires active session)
+expandable+ #lightGreen handling deposit result through Paydala Flutter widget (requires active session)
 'alt httpStatus == 400 (message == "Txn in progress" or message == "Connection terminated")
 OpApp->PaydalaWidget
 OpApp<-PaydalaWidget
@@ -93,7 +94,7 @@ end
 
 
 '---handling inside PFW
-expandable− #lightBlue handling deposit result in Operator App (through the getTxnStatus API)
+expandable+ #lightBlue handling deposit result in Operator App (through the getTxnStatus API)
 alt httpStatus == 400 (message == "Txn in progress" or message == "Connection terminated")
 loop until httpStatus == 200 or (httpStatus == 400 and message == "Deposit failed")
 OpApp->OpBackend:getTxnStatus( {refType, refId} as payload )

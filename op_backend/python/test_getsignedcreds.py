@@ -1,6 +1,6 @@
 import requests
 from requests.structures import CaseInsensitiveDict
-from signedcreds import *
+from signedcreds.signedcreds import *
 import json
 
 url = "http://localhost:8000/getSignedCreds"

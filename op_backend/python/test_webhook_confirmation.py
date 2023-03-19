@@ -2,8 +2,9 @@ import requests
 import json
 from hashlib import sha256
 import hmac
+from signedcreds import *
 
-API_SECRET_KEY = "your_api_secret_key_here"
+API_SECRET_KEY = SECRET_KEY
 
 payload = {
     "email": "john.smith@demora.org", 

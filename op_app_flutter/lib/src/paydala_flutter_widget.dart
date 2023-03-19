@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ffi';
 // import 'dart:convert';
 import 'dart:io';
 // import 'dart:typed_data';
@@ -6,14 +8,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
+import 'package:op_app_flutter/src/signedcreds.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
   final String title;
   final String url;
   final String payload;
+  late String requestId;
+  late SignedCreds signedCreds;
 
   PaydalaFlutterWidget(
-      {required this.title, required this.url, required this.payload});
+      {required this.title, required this.url, required this.payload}) {
+    signedCreds = getSignedCreds(payload);
+    var credsMap = jsonDecode(signedCreds.creds);
+    requestId = credsMap['requestId'];
+  }
   // const PaydalaFlutterWidget({super.key});
 
   @override
@@ -81,7 +90,11 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           onWebViewCreated: (WebViewController webViewController) async {
             await webViewController.loadUrl(
               widget.url,
-              headers: {"authorization": cjwt},
+              headers: {
+                "credentials": widget.signedCreds.creds,
+                "x-client-sign": widget.signedCreds.signature,
+                "operatorRequestId": widget.requestId
+              },
             );
           },
           onProgress: (int progress) {

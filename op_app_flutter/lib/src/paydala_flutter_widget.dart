@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 // import 'dart:convert';
 import 'dart:io';
 // import 'dart:typed_data';
@@ -91,9 +90,10 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
             await webViewController.loadUrl(
               widget.url,
               headers: {
-                "credentials": widget.signedCreds.creds,
-                "x-client-sign": widget.signedCreds.signature,
-                "operatorRequestId": widget.requestId
+                "credentials": Uri.encodeComponent(widget.signedCreds.creds),
+                "x-client-sign":
+                    Uri.encodeComponent(widget.signedCreds.signature),
+                "operatorRequestId": Uri.encodeComponent(widget.requestId)
               },
             );
           },

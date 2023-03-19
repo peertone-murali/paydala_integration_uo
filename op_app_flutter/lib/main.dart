@@ -173,13 +173,25 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(
+            16, 16, 16, 16), //const EdgeInsets.all(16.0),
         child: ElevatedButton(
           onPressed: _selectedAmount != null
               ? () {
                   // TODO: Deposit logic
                   var payload = createPayload();
-                  payload.predefinedAmount.values = 30;
+                  if (_selectedAmount != null) {
+                    final selectedRow = _amounts[_selectedAmount!];
+                    final usdValue = selectedRow['label'];
+                    final usdValueDouble = double.parse(usdValue!);
+                    payload.predefinedAmount.values = usdValueDouble;
+                    // Clipboard.setData(ClipboardData(text: usdValue));
+                  } else {
+                    payload.predefinedAmount.values = 0;
+                    payload.predefinedAmount.isEditable = true;
+                  }
+
+                  // payload.predefinedAmount.values = 30;
                   Navigator.push(
                     context,
                     MaterialPageRoute(

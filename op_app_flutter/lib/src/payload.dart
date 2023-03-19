@@ -76,8 +76,8 @@ class Address {
 
 @JsonSerializable()
 class PredefinedAmount {
-  late int values;
-  final bool isEditable;
+  late double values;
+  late bool isEditable;
 
   PredefinedAmount({
     required this.values,

@@ -59,7 +59,7 @@ Map<String, dynamic> _$AddressToJson(Address instance) => <String, dynamic>{
 
 PredefinedAmount _$PredefinedAmountFromJson(Map<String, dynamic> json) =>
     PredefinedAmount(
-      values: json['values'] as int,
+      values: (json['values'] as num).toDouble(),
       isEditable: json['isEditable'] as bool,
     );
 

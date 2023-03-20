@@ -101,15 +101,15 @@ var payloadJson = '''
 {
     "defaultUser": {
       "address": {
-        "city": "New Jersey",
+        "city": "New York",
         "postalCode": "07051",
-        "region": "New Jersey",
+        "region": "New York",
         "address": "First Avenue"
       },
       "dob": "1986-02-20",
       "email": "john.smith@demora.org",
       "ssn": "2451",
-      "first_nme": "John",
+      "first_name": "John",
       "last_name": "Smith",
       "phone": "2010100341"
     },
@@ -121,30 +121,30 @@ var payloadJson = '''
     "isWebView": true
 }
 ''';
-// var payloadJson = '''
-//         {
-//           "defaultUser": {
-//             "address": {
-//               "city": "San Francisco",
-//               "postalCode": "94107",
-//               "region": "CA",
-//               "address": "123 Main St"
-//             },
-//             "dob": "1990-01-01",
-//             "email": "john@example.com",
-//             "ssn": "6789",
-//             "first_name": "John",
-//             "last_name": "Doe",
-//             "phone": "555-555-5555"
-//           },
-//           "predefinedAmount": {
-//             "values": 30,
-//             "isEditable": false
-//           },
-//           "redirectUrl": "https://dev.paydala.com",
-//           "isWebView": true
-//         }
-//       ''';
+/*var payloadJson = '''
+        {
+          "defaultUser": {
+            "address": {
+              "city": "San Francisco",
+              "postalCode": "94107",
+              "region": "CA",
+              "address": "123 Main St"
+            },
+            "dob": "1990-01-01",
+            "email": "john@example.com",
+            "ssn": "6789",
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone": "555-555-5555"
+          },
+          "predefinedAmount": {
+            "values": 30,
+            "isEditable": false
+          },
+          "redirectUrl": "https://dev.paydala.com",
+          "isWebView": true
+        }
+      ''';*/
 Payload createPayload() {
   Map<String, dynamic> payloadMap = jsonDecode(payloadJson);
   var payload = Payload.fromJson(payloadMap);

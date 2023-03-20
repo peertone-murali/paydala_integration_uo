@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
+// import 'package:crypto/crypto.dart';
 import 'package:op_app_flutter/src/utils.dart';
 
 // Define the endpoint URL and the data to send in the request body
@@ -49,7 +49,7 @@ SignedCreds getSignedCreds(String payload) {
     "customerId": "1", // replace with customer id
     "client_id": CLIENT_ID,
     "category_id": 1,
-    "region": "USA",
+    "region": "New York",
     "timestamp": getCurrentTimestamp(),
     "payload": map
   };

@@ -1,5 +1,8 @@
 import 'dart:convert';
+// import 'package:utf/utf.dart';
 import 'dart:math';
+// import 'dart:typed_data';
+// import 'package:convert/convert.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +10,27 @@ import 'package:uuid/uuid.dart';
 
 var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
 var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
+
+/*Uint8List hmacSha256(Uint8List hmacKey, Uint8List data) {
+  final hmac = HMac(SHA256Digest(), 64) // HMAC SHA-256: block must be 64 bytes
+    ..init(KeyParameter(hmacKey));
+
+  return hmac.process(data);
+}
+
+String generateHmacSha256SignaturePc(String message) {
+  Uint8List dataBytes = Uint8List.fromList(message.codeUnits);
+  Uint8List keyBytes = Uint8List.fromList(SECRET.codeUnits);
+// void main(List<String> args) {
+  // final key = utf8.encode(SECRET); // first argument is the key
+  // final data = utf8.encode(message); // second argument is the data
+
+  final hmacValue = hmacSha256(keyBytes, dataBytes);
+  return utf16.decode(hmacValue);
+  // return String.fromCharCodes(hmacValue);
+  // print('HMAC SHA-256: $hmacValue');
+
+}*/
 
 String getCurrentTimestamp() {
   var now = DateTime.now();

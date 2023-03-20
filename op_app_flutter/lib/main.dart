@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
 import 'package:op_app_flutter/src/payload.dart';
-import 'package:op_app_flutter/src/utils.dart';
+// import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/paydala_webview.dart';
 
 void main() => runApp(MyApp());
@@ -309,17 +309,18 @@ class WithdrawScreen extends StatelessWidget {
                     '10'; // get the withdrawal amount from the text field
                 String url =
                     "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => // PaydalaWithdrawScreen()
-                        PaydalaFlutterWidget(
-                            title: 'Login & withdraw',
-                            url: url,
-                            payload: '{"email" : "john.doe@test.com"}'),
-                  ),
-                  // PaydalaDepositScreen()));
-                );
+                _showDialog(context, "Paydala", "Not yet integrated");
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => // PaydalaWithdrawScreen()
+                //         PaydalaFlutterWidget(
+                //             title: 'Login & withdraw',
+                //             url: url,
+                //             payload: '{"email" : "john.doe@test.com"}'),
+                //   ),
+                //   // PaydalaDepositScreen()));
+                // );
               },
               child: Text('Withdraw'),
             ),
@@ -328,4 +329,24 @@ class WithdrawScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showDialog(BuildContext context, String title, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }

@@ -88,12 +88,14 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           // },
           onWebViewCreated: (WebViewController webViewController) async {
             await webViewController.loadUrl(
-              Uri.encodeFull(widget.url),
+              widget.url, //Uri.encodeFull(widget.url),
               headers: {
-                "credentials": Uri.encodeComponent(widget.signedCreds.creds),
-                "x-client-sign":
-                    Uri.encodeComponent(widget.signedCreds.signature),
-                "operatorRequestId": Uri.encodeComponent(widget.requestId)
+                "credentials": widget.signedCreds
+                    .creds, //.encodeComponent(widget.signedCreds.creds),
+                "x-client-sign": widget.signedCreds
+                    .signature, //.encodeComponent(widget.signedCreds.signature),
+                "operatorRequestId":
+                    widget.requestId, // Uri.encodeComponent(widget.requestId)
               },
             );
           },

@@ -199,7 +199,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                           PaydalaFlutterWidget(
                               title: 'Paydala Deposit',
                               url:
-                                  "https://dev-widget.paydala.com/?environment=development",
+                                  "https://dev-widget.paydala.com?environment=development",
                               payload: jsonEncode(payload)),
                     ),
                     // PaydalaDepositScreen()));

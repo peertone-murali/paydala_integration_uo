@@ -20,6 +20,8 @@ class PaydalaFlutterWidget extends StatefulWidget {
   PaydalaFlutterWidget(
       {required this.title, required this.url, required this.payload}) {
     signedCreds = getSignedCreds(payload);
+    print(
+        "payload : ${signedCreds.creds}, signature : ${signedCreds.signature}");
     var credsMap = jsonDecode(signedCreds.creds);
     requestId = credsMap['requestId'];
   }

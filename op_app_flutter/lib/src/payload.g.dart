@@ -7,6 +7,8 @@ part of 'payload.dart';
 // **************************************************************************
 
 Payload _$PayloadFromJson(Map<String, dynamic> json) => Payload(
+      requestId: json['requestId'] as String,
+      customerId: json['customerId'] as String,
       defaultUser:
           DefaultUser.fromJson(json['defaultUser'] as Map<String, dynamic>),
       predefinedAmount: PredefinedAmount.fromJson(
@@ -16,6 +18,8 @@ Payload _$PayloadFromJson(Map<String, dynamic> json) => Payload(
     );
 
 Map<String, dynamic> _$PayloadToJson(Payload instance) => <String, dynamic>{
+      'requestId': instance.requestId,
+      'customerId': instance.customerId,
       'defaultUser': instance.defaultUser.toJson(),
       'predefinedAmount': instance.predefinedAmount.toJson(),
       'redirectUrl': instance.redirectUrl,
@@ -65,6 +69,6 @@ PredefinedAmount _$PredefinedAmountFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$PredefinedAmountToJson(PredefinedAmount instance) =>
     <String, dynamic>{
-      'values': instance.values,
+      'values': PredefinedAmount._doubleToJson(instance.values),
       'isEditable': instance.isEditable,
     };

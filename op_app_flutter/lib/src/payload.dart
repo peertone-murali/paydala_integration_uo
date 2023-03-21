@@ -6,12 +6,16 @@ part 'payload.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Payload {
+  final String requestId;
+  final String customerId;
   final DefaultUser defaultUser;
   final PredefinedAmount predefinedAmount;
   final String redirectUrl;
   final bool isWebView;
 
   Payload({
+    required this.requestId,
+    required this.customerId,
     required this.defaultUser,
     required this.predefinedAmount,
     required this.redirectUrl,
@@ -76,6 +80,7 @@ class Address {
 
 @JsonSerializable()
 class PredefinedAmount {
+  @JsonKey(/*fromJson: _doubleFromJson,*/ toJson: _doubleToJson)
   late double values;
   late bool isEditable;
 
@@ -88,6 +93,12 @@ class PredefinedAmount {
       _$PredefinedAmountFromJson(json);
 
   Map<String, dynamic> toJson() => _$PredefinedAmountToJson(this);
+  // static double _doubleFromJson(String doubleStr) =>
+  //     double.parse(doubleStr);
+
+  static num _doubleToJson(double values) =>
+      (values % 1 == 0 ? values.toInt() : values);
+  // values.toString().replaceAll(RegExp(r'([.]*0)(?!.*\d)'), '');
 }
 
 // "requestId": "",
@@ -99,6 +110,8 @@ class PredefinedAmount {
 
 var payloadJson = '''
 {
+    "requestId": "",
+    "customerId" : "1",
     "defaultUser": {
       "address": {
         "city": "New York",

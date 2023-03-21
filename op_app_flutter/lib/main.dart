@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
 import 'package:op_app_flutter/src/payload.dart';
+import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/paydala_webview.dart';
 
@@ -190,6 +191,8 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                     payload.predefinedAmount.values = 0;
                     payload.predefinedAmount.isEditable = true;
                   }
+                  payload.customerId = '123456';
+                  payload.requestId = generateUuid();
 
                   // payload.predefinedAmount.values = 30;
                   Navigator.push(

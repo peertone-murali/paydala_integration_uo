@@ -6,8 +6,8 @@ part 'payload.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Payload {
-  final String requestId;
-  final String customerId;
+  String requestId;
+  String customerId;
   final DefaultUser defaultUser;
   final PredefinedAmount predefinedAmount;
   final String redirectUrl;

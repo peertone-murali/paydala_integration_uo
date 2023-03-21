@@ -45,8 +45,8 @@ SignedCreds? getSignedCredsFromServer(String payload) {
 SignedCreds getSignedCreds(String payload) {
   Map<String, dynamic> map = jsonDecode(payload);
   Map<String, dynamic> credsMap = {
-    "requestId": generateUuid(),
-    "customerId": "1", // replace with customer id
+    // "requestId": generateUuid(),
+    // "customerId": "1", // replace with customer id
     "client_id": CLIENT_ID,
     "category_id": 1,
     "region": "New York",

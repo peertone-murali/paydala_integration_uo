@@ -309,7 +309,7 @@ class WithdrawScreen extends StatelessWidget {
                     '10'; // get the withdrawal amount from the text field
                 String url =
                     "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
-                _showDialog(context, "Paydala", "Not yet integrated");
+                showMessageDialog(context, "Paydala", "Not yet integrated");
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(
@@ -331,7 +331,7 @@ class WithdrawScreen extends StatelessWidget {
   }
 }
 
-void _showDialog(BuildContext context, String title, String message) {
+void showMessageDialog(BuildContext context, String title, String message) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

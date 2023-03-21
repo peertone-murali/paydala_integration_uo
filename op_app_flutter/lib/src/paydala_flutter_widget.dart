@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
+import 'package:op_app_flutter/main.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
@@ -132,11 +133,14 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
     return JavascriptChannel(
         name: 'PayDala',
         onMessageReceived: (JavascriptMessage message) {
-          print(message);
+          // print(message);
           // ignore: deprecated_member_use
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message.message)),
+            SnackBar(content: Text("txnDetails ${message.message}")),
           );
+          print("txnDetails JSON = ${message.message}");
+          // showMessageDialog(context, "Deposit result", message.message);
+          // Navigator.pop(context);
         });
   }
 }

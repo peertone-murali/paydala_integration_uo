@@ -9,6 +9,7 @@ part of 'txn_details.dart';
 TransactionResponse _$TransactionResponseFromJson(Map<String, dynamic> json) =>
     TransactionResponse(
       result: json['result'] as String,
+      message: json['message'] as String,
       refType: json['refType'] as int,
       txnRef: json['txnRef'] as String,
       timeStamp:
@@ -22,6 +23,7 @@ Map<String, dynamic> _$TransactionResponseToJson(
         TransactionResponse instance) =>
     <String, dynamic>{
       'result': instance.result,
+      'message': instance.message,
       'refType': instance.refType,
       'txnRef': instance.txnRef,
       'timeStamp': TransactionResponse._dateTimeToJson(instance.timeStamp),

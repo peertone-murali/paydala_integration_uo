@@ -9,21 +9,21 @@ void main() {
       "result": "partial",
       "refType": 2,
       "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002",
-      "timeStamp": "2023-03-19 10:00:00.000",
+      "timeStamp": "2023-03-19T10:00:00.00Z",
       "txnDetails": [
         {
           "txnRef": "abcdef",
           "status": "processing",
           "currencyId": 1,
           "amount": 10.0,
-          "timeStamp": "2023-03-19 10:01:00.000"
+          "timeStamp": "2023-03-19T10:01:00.00Z"
         },
         {
           "txnRef": "ghijkl",
           "status": "processed",
           "currencyId": 2,
           "amount": 20.0,
-          "timeStamp": "2023-03-19 10:02:00.000"
+          "timeStamp": "2023-03-19T10:02:00.00Z"
         }
       ]
     };
@@ -35,7 +35,7 @@ void main() {
     expect(transactionResponse.txnRef,
         equals("3b524d4-c254-11ed-afa1-0242ac120002"));
     expect(transactionResponse.timeStamp,
-        equals(DateTime.parse("2023-03-19 10:00:00.000")));
+        equals(DateTime.parse("2023-03-19T10:00:00.00Z")));
     expect(transactionResponse.txnDetails.length, equals(2));
 
     final txnDetails1 = transactionResponse.txnDetails[0];
@@ -44,7 +44,7 @@ void main() {
     expect(txnDetails1.currencyId, equals(1));
     expect(txnDetails1.amount, equals(10.0));
     expect(txnDetails1.timeStamp,
-        equals(DateTime.parse("2023-03-19 10:01:00.000")));
+        equals(DateTime.parse("2023-03-19T10:01:00.00Z")));
 
     final txnDetails2 = transactionResponse.txnDetails[1];
     expect(txnDetails2.txnRef, equals("ghijkl"));
@@ -52,7 +52,7 @@ void main() {
     expect(txnDetails2.currencyId, equals(2));
     expect(txnDetails2.amount, equals(20.0));
     expect(txnDetails2.timeStamp,
-        equals(DateTime.parse("2023-03-19 10:02:00.000")));
+        equals(DateTime.parse("2023-03-19T10:02:00.00Z")));
   });
 
   test('TransactionResponse toJson should match the expected json format', () {
@@ -74,6 +74,7 @@ void main() {
     );
     final transactionResponse = TransactionResponse(
       result: 'partial',
+      message: '',
       refType: 2,
       txnRef: '3b524d4-c254-11ed-afa1-0242ac120002',
       timeStamp: dateTime1,
@@ -84,21 +85,21 @@ void main() {
       'result': 'partial',
       'refType': 2,
       'txnRef': '3b524d4-c254-11ed-afa1-0242ac120002',
-      'timeStamp': '2023-03-22 15:30:00.000',
+      'timeStamp': '2023-03-22T15:30:00.00Z',
       'txnDetails': [
         {
           'txnRef': 'abcdef',
           'status': 'processing',
           'currencyId': 1,
           'amount': 10.0,
-          'timeStamp': '2023-03-22 15:30:00.000',
+          'timeStamp': '2023-03-22T15:30:00.00Z',
         },
         {
           'txnRef': 'ghijkl',
           'status': 'successful',
           'currencyId': 2,
           'amount': 20.0,
-          'timeStamp': '2023-03-23 10:00:00.000',
+          'timeStamp': '2023-03-23T10:00:00.00Z',
         },
       ],
     };

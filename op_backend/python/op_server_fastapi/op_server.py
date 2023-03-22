@@ -45,6 +45,33 @@ async def get_signed_creds(request: Request):
     return {"creds":creds.creds, "signature" : creds.signature }
     # return json.dumps(creds, cls=SignedCredsEncoder)
 
+from fastapi import FastAPI
+from datetime import datetime
+
+app = FastAPI()
+
+@app.post("/getTxnStatus")
+async def txn_details(payload: dict):
+    ref_type = payload.get("refType")
+    txn_ref = payload.get("txnRef")
+
+    # Dummy data for txnDetails
+    txn_details = [
+        {"txnRef": "abcdef", "status": "processing", "currencyId": 1, "amount": 10, "timeStamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")},
+        {"txnRef": "ghijkl", "status": "success", "currencyId": 1, "amount": 20, "timeStamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}
+    ]
+
+    # Prepare the response payload
+    response = {
+        "result": "partial",
+        "refType": ref_type,
+        "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002",
+        "timeStamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+        "txnDetails": txn_details
+    }
+
+    return response
+
 
 
 @app.post("/webhookConfirmation")

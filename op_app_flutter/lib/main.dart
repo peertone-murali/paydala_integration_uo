@@ -10,6 +10,8 @@ import 'package:op_app_flutter/src/utils.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,12 +20,17 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: WalletHomePage(),
+      routes: {
+        '/wallet': (context) => WalletHomePage(),
+      },
     );
   }
 }
 
 class WalletHomePage extends StatelessWidget {
   final int balance = 1500;
+
+  const WalletHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +157,8 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
           headingRowColor:
               MaterialStateColor.resolveWith((states) => Colors.grey[200]!),
           columns: [
-            DataColumn(label: Text('USD     ')),
-            DataColumn(label: Text('Gold Coins ')),
+            DataColumn(label: Text('USD   ')),
+            DataColumn(label: Text('Cash Coins ')),
             DataColumn(label: Text('Regular Coins')),
           ],
           rows: [
@@ -307,12 +314,17 @@ class WithdrawScreen extends StatelessWidget {
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 String withdrawalAmount =
                     '10'; // get the withdrawal amount from the text field
                 String url =
                     "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
-                showMessageDialog(context, "Paydala", "Not yet integrated");
+                showBlockingDialog(context, "Paydala", "Not yet integrated");
+                // Navigator.pushNamedAndRemoveUntil(
+                //   context,
+                //   '/wallet',
+                //   (route) => false,
+                // );
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(
@@ -337,6 +349,8 @@ class WithdrawScreen extends StatelessWidget {
 void showMessageDialog(BuildContext context, String title, String message) {
   showDialog(
     context: context,
+    barrierDismissible:
+        false, // prevent dialog from being dismissed by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(title),
@@ -344,9 +358,36 @@ void showMessageDialog(BuildContext context, String title, String message) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              // Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/wallet',
+                (route) => false,
+              );
             },
             child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showBlockingDialog(BuildContext context, String title, String message) {
+  showDialog(
+    context: context,
+    barrierDismissible:
+        false, // prevent dialog from being dismissed by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       );

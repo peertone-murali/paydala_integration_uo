@@ -8,10 +8,10 @@ part 'payload.g.dart';
 class Payload {
   String requestId;
   String customerId;
-  final DefaultUser defaultUser;
-  final PredefinedAmount predefinedAmount;
-  final String redirectUrl;
-  final bool isWebView;
+  DefaultUser defaultUser;
+  PredefinedAmount predefinedAmount;
+  String redirectUrl;
+  bool isWebView;
 
   Payload({
     required this.requestId,
@@ -30,17 +30,17 @@ class Payload {
 
 @JsonSerializable(explicitToJson: true)
 class DefaultUser {
-  final Address address;
-  final String dob;
-  final String email;
-  final String ssn;
+  Address address;
+  String dob;
+  String email;
+  String ssn;
 
   @JsonKey(name: 'first_name')
-  final String firstName;
+  String firstName;
 
   @JsonKey(name: 'last_name')
-  final String lastName;
-  final String phone;
+  String lastName;
+  String phone;
 
   DefaultUser({
     required this.address,
@@ -60,10 +60,10 @@ class DefaultUser {
 
 @JsonSerializable()
 class Address {
-  final String city;
-  final String postalCode;
-  final String region;
-  final String address;
+  String city;
+  String postalCode;
+  String region;
+  String address;
 
   Address({
     required this.city,

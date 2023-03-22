@@ -4,10 +4,11 @@ import 'dart:convert';
 import 'dart:io';
 // import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
-import 'package:op_app_flutter/main.dart';
+// import 'package:op_app_flutter/main.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
@@ -20,10 +21,20 @@ class PaydalaFlutterWidget extends StatefulWidget {
   PaydalaFlutterWidget(
       {required this.title, required this.url, required this.payload}) {
     signedCreds = getSignedCreds(payload);
-    print(
-        "payload : ${signedCreds.creds}, signature : ${signedCreds.signature}");
-    var credsMap = jsonDecode(signedCreds.creds);
-    requestId = credsMap['payload']["requestId"];
+    if (kDebugMode) {
+      print(
+          "payload : ${signedCreds.creds}, signature : ${signedCreds.signature}");
+    }
+    try {
+      var credsMap = jsonDecode(signedCreds.creds);
+      requestId = credsMap['payload']["requestId"];
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error decoding JSON: $e");
+      }
+    }
+    // var credsMap = jsonDecode(signedCreds.creds);
+    // requestId = credsMap['payload']["requestId"];
     ;
   }
   // const PaydalaFlutterWidget({super.key});
@@ -132,18 +143,100 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
     );
   }
 
+  bool isJSON(String str) {
+    try {
+      jsonDecode(str);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  var txnRespJsonStr = '''
+{
+    "result": "partial", // or "success" or "failed"
+    "refType": 2, // for requestId
+    "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002", // requestId
+    "timeStamp": "2020-01-01T00:00:00Z",
+    "txnDetails": [
+      {
+        "txnRef": "1234567890",
+        "status": "failed",
+        "currencyId": 1,
+        "amount": 100.00,
+        "timeStamp": "2020-01-01T00:00:00Z"
+      },
+      {
+        "txnRef": "7264839283",
+        "status": "success",
+        "currencyId": 1,
+        "amount": 50.00,
+        "timeStamp": "2020-01-01T01:00:00Z"
+      }
+    ]
+  }
+  ''';
+
   JavascriptChannel _paydalaJavascriptChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'PayDala',
         onMessageReceived: (JavascriptMessage message) {
+          double totalAmout = 0.0;
           // print(message);
           // ignore: deprecated_member_use
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("txnDetails ${message.message}")),
-          );
-          print("txnDetails JSON = ${message.message}");
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(content: Text("txnDetails ${message.message}")),
+          // );
+          if (kDebugMode) {
+            print("txnDetails JSON = ${message.message}");
+          }
           // showMessageDialog(context, "Deposit result", message.message);
           // Navigator.pop(context);
+          var txnResponse = message.message;
+
+          if (isJSON(txnResponse)) {
+            final Map<String, dynamic> data = json.decode(message.message);
+            List<dynamic> txnDetails = [];
+
+            try {
+              txnDetails = data['txnDetails'];
+            } catch (e) {
+              if (kDebugMode) {
+                print("Missing txtDetails: $e");
+              }
+            }
+
+            for (final txnDetail in txnDetails) {
+              // Access and examine each property of the txnDetail object
+              try {
+                final String txnRef = txnDetail['txnRef'];
+                final String status = txnDetail['status'];
+                final int currencyId = txnDetail['currencyId'];
+                final double amount = txnDetail['amount'];
+                final String timeStamp = txnDetail['timeStamp'];
+              } catch (e) {
+                if (kDebugMode) {
+                  print("Dictionary access error : $e");
+                }
+              }
+              // print('$txnRef $status $currencyId $amount $timeStamp');
+            }
+          }
+
+          // Navigator.pushReplacementNamed(context, '/wallet');
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/wallet',
+            (route) => false,
+          ).then((value) => setState(() {}));
+          ;
+          // setState(() {
+          //   Navigator.pushNamedAndRemoveUntil(
+          //     context,
+          //     '/wallet',
+          //     (route) => false,
+          //   );
+          // });
         });
   }
 }

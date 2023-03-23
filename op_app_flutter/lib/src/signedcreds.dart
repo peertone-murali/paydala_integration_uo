@@ -23,7 +23,7 @@ class SignedCreds {
       };
 }
 
-SignedCreds? getSignedCredsFromServer(String payload) {
+SignedCreds? getSignedCreds(String payload) {
 // Make the POST request
   http.post(Uri.parse(endpointUrl), body: payload).then((response) {
     if (response.statusCode == 200) {
@@ -42,7 +42,7 @@ SignedCreds? getSignedCredsFromServer(String payload) {
   return null;
 }
 
-SignedCreds getSignedCreds(String payload) {
+SignedCreds getSignedCredsLocal(String payload) {
   Map<String, dynamic> map = jsonDecode(payload);
   Map<String, dynamic> credsMap = {
     // "requestId": generateUuid(),

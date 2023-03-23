@@ -92,10 +92,10 @@ class TransactionResponse {
   Map<String, dynamic> toJson() => _$TransactionResponseToJson(this);
 
   static DateTime _dateTimeFromJson(String dateTime) =>
-      DateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(dateTime);
+      DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateTime);
 
   static String _dateTimeToJson(DateTime dateTime) =>
-      DateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(dateTime);
+      DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(dateTime);
 }
 
 @JsonSerializable(explicitToJson: true)

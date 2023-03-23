@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'txn_details.dart';
+part of 'txn_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

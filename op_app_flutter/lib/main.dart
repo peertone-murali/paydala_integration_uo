@@ -225,8 +225,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   }
                   payload.customerId = '123456';
                   payload.requestId = generateUuid();
-                  SignedCreds signedCreds =
-                      getSignedCredsLocal(jsonEncode(payload));
+                  SignedCreds signedCreds = getSignedCreds(jsonEncode(payload));
 
                   // payload.predefinedAmount.values = 30;
                   Navigator.push(

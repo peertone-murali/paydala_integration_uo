@@ -1,5 +1,6 @@
 // import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 // import 'package:crypto/crypto.dart';
 import 'package:op_app_flutter/src/utils.dart';
@@ -23,7 +24,7 @@ class SignedCreds {
       };
 }
 
-SignedCreds? getSignedCreds(String payload) {
+SignedCreds getSignedCredsServer(String payload) {
 // Make the POST request
   http.post(Uri.parse(endpointUrl), body: payload).then((response) {
     if (response.statusCode == 200) {
@@ -39,7 +40,7 @@ SignedCreds? getSignedCreds(String payload) {
     // There was an error in making the request
     // print('Error: $error');
   });
-  return null;
+  return SignedCreds("", "");
 }
 
 SignedCreds getSignedCredsLocal(String payload) {
@@ -55,6 +56,14 @@ SignedCreds getSignedCredsLocal(String payload) {
   };
   var creds = jsonEncode(credsMap);
   return SignedCreds(creds, generateHmacSha256Signature(creds));
+}
+
+SignedCreds getSignedCreds(String payload) {
+  if (kDebugMode) {
+    return getSignedCredsLocal(payload);
+  } else {
+    return getSignedCredsServer(payload);
+  }
 }
 
 class UserTransaction {

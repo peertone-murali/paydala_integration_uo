@@ -6,14 +6,12 @@ part of 'channel_event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransactionComplete _$TransactionCompleteFromJson(Map<String, dynamic> json) =>
-    TransactionComplete(
+ChannelEvent _$ChannelEventFromJson(Map<String, dynamic> json) => ChannelEvent(
       type: json['type'] as String,
       payload: EventPayload.fromJson(json['payload'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$TransactionCompleteToJson(
-        TransactionComplete instance) =>
+Map<String, dynamic> _$ChannelEventToJson(ChannelEvent instance) =>
     <String, dynamic>{
       'type': instance.type,
       'payload': instance.payload.toJson(),

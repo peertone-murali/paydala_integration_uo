@@ -8,6 +8,7 @@ import json
 import logging
 from fastapi import FastAPI, Header, HTTPException
 from hashlib import sha256
+from datetime import datetime
 import hmac
 
 sys.path.append('..')  # Add parent directory to path
@@ -45,10 +46,8 @@ async def get_signed_creds(request: Request):
     return {"creds":creds.creds, "signature" : creds.signature }
     # return json.dumps(creds, cls=SignedCredsEncoder)
 
-from fastapi import FastAPI
-from datetime import datetime
+# from fastapi import FastAPI
 
-app = FastAPI()
 
 @app.post("/getTxnStatus")
 async def txn_details(payload: dict):
@@ -73,14 +72,13 @@ async def txn_details(payload: dict):
     return response
 
 
-
 @app.post("/webhookConfirmation")
 async def webhook_confirmation(payload: dict, X_Request_Signature: str = Header(None)):
     if X_Request_Signature is None:
         raise HTTPException(status_code=400, detail="X-Request-Signature header is missing")
     
     # Create the signature using the API_SECRET_KEY and the payload
-    signature = hmac.new(API_SECRET_KEY.encode(), str(payload).encode(), sha256).hexdigest()
+    signature = hmac.new(API_SECRET_KEY.encode(), json.dumps(payload).encode(), sha256).hexdigest()
 
     # Compare the signature in the X-Request-Signature header with the calculated signature
     if not hmac.compare_digest(signature, X_Request_Signature):
@@ -90,7 +88,6 @@ async def webhook_confirmation(payload: dict, X_Request_Signature: str = Header(
     print(payload)
     
     return {"message": "Webhook confirmed"}
-
 
 
 

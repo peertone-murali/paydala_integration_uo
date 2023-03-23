@@ -65,7 +65,7 @@ class TransactionDetails {
 import 'package:json_annotation/json_annotation.dart';
 import 'package:intl/intl.dart';
 
-part 'txn_details.g.dart';
+part 'txn_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TransactionResponse {

@@ -3,16 +3,16 @@ import 'package:json_annotation/json_annotation.dart';
 part 'channel_event.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class TransactionComplete {
+class ChannelEvent {
   String type;
   EventPayload payload;
 
-  TransactionComplete({required this.type, required this.payload});
+  ChannelEvent({required this.type, required this.payload});
 
-  factory TransactionComplete.fromJson(Map<String, dynamic> json) =>
-      _$TransactionCompleteFromJson(json);
+  factory ChannelEvent.fromJson(Map<String, dynamic> json) =>
+      _$ChannelEventFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TransactionCompleteToJson(this);
+  Map<String, dynamic> toJson() => _$ChannelEventToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)

@@ -1,29 +1,54 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
 import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/utils.dart';
+import 'package:op_app_flutter/src/signedcreds.dart';
 // import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/paydala_webview.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
 
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Wallet App',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: WalletHomePage(),
+//       routes: {
+//         '/wallet': (context) => WalletHomePage(),
+//       },
+//     );
+//   }
+// }
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Wallet App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: WalletHomePage(),
-      routes: {
-        '/wallet': (context) => WalletHomePage(),
-      },
-    );
+    final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    return isIOS
+        ? CupertinoApp(
+            title: 'Wallet App',
+            home: WalletHomePage(),
+            routes: {
+              '/wallet': (context) => WalletHomePage(),
+            },
+          )
+        : MaterialApp(
+            title: 'Wallet App',
+            home: WalletHomePage(),
+            routes: {
+              '/wallet': (context) => WalletHomePage(),
+            },
+          );
   }
 }
 
@@ -200,6 +225,8 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   }
                   payload.customerId = '123456';
                   payload.requestId = generateUuid();
+                  SignedCreds signedCreds =
+                      getSignedCredsLocal(jsonEncode(payload));
 
                   // payload.predefinedAmount.values = 30;
                   Navigator.push(
@@ -207,10 +234,11 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                     MaterialPageRoute(
                       builder: (context) => // PaydalaDepositScreen()
                           PaydalaFlutterWidget(
-                              title: 'Paydala Deposit',
-                              url:
-                                  "https://dev-widget.paydala.com?environment=development",
-                              payload: jsonEncode(payload)),
+                        title: 'Paydala Deposit',
+                        url:
+                            "https://dev-widget.paydala.com?environment=development",
+                        signedCreds: signedCreds,
+                      ),
                     ),
                     // PaydalaDepositScreen()));
                   );

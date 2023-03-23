@@ -14,17 +14,17 @@ import 'package:op_app_flutter/src/signedcreds.dart';
 class PaydalaFlutterWidget extends StatefulWidget {
   final String title;
   final String url;
-  final String payload;
+  //String payload;
   late String requestId;
   late SignedCreds signedCreds;
 
   PaydalaFlutterWidget(
-      {required this.title, required this.url, required this.payload}) {
-    signedCreds = getSignedCreds(payload);
-    if (kDebugMode) {
-      print(
-          "payload : ${signedCreds.creds}, signature : ${signedCreds.signature}");
-    }
+      {required this.title, required this.url, required this.signedCreds}) {
+    // signedCreds = getSignedCreds(payload);
+    // if (kDebugMode) {
+    //   print(
+    //       "payload : ${signedCreds.creds}, signature : ${signedCreds.signature}");
+    // }
     try {
       var credsMap = jsonDecode(signedCreds.creds);
       requestId = credsMap['payload']["requestId"];

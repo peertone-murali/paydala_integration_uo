@@ -32,6 +32,15 @@ String generateHmacSha256SignaturePc(String message) {
 
 }*/
 
+bool isJSON(String str) {
+  try {
+    jsonDecode(str);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 String getCurrentTimestamp() {
   var now = DateTime.now();
   var formatter = DateFormat('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');

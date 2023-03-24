@@ -37,6 +37,9 @@ class MyApp extends StatelessWidget {
     return isIOS
         ? CupertinoApp(
             title: 'Wallet App',
+            theme: CupertinoThemeData(
+              primaryColor: Colors.blue,
+            ),
             home: WalletHomePage(),
             routes: {
               '/wallet': (context) => WalletHomePage(),
@@ -44,6 +47,9 @@ class MyApp extends StatelessWidget {
           )
         : MaterialApp(
             title: 'Wallet App',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
             home: WalletHomePage(),
             routes: {
               '/wallet': (context) => WalletHomePage(),

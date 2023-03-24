@@ -9,6 +9,7 @@ import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:op_app_flutter/src/channel_event.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
+import 'package:op_app_flutter/src/utils.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
   final String title;
@@ -70,12 +71,7 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          // initialUrl: widget.url, //'https://ultodds.com/',
-          // withHeaders: {"authorization": cjwt},
           javascriptMode: JavascriptMode.unrestricted,
-          // onWebViewCreated: (WebViewController webViewController) {
-          //   controller.complete(webViewController);
-          // },
           onWebViewCreated: (WebViewController webViewController) async {
             await webViewController.loadUrl(
               widget.url, //Uri.encodeFull(widget.url),
@@ -115,15 +111,6 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
         );
       }),
     );
-  }
-
-  bool isJSON(String str) {
-    try {
-      jsonDecode(str);
-      return true;
-    } catch (_) {
-      return false;
-    }
   }
 
   JavascriptChannel _paydalaJavascriptChannel(
@@ -197,18 +184,4 @@ Future<LocationData?> _getLocationData() async {
   locationData = await location.getLocation();
 
   return locationData;
-}
-
-TransactionResponse createTxnResponse(String creds) {
-  var credsMap = jsonDecode(creds);
-
-  print("creds = $creds");
-
-  return TransactionResponse(
-      result: "",
-      message: "",
-      refType: 2,
-      txnRef: credsMap["payload"]["requestId"],
-      timeStamp: DateTime.parse(credsMap["timestamp"]),
-      txnDetails: []);
 }

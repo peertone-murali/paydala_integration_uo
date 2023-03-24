@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'channel_event.g.dart';
@@ -47,4 +49,12 @@ class EventPayload {
 
   static String _dateTimeToJson(DateTime dateTime) =>
       dateTime.toUtc().toIso8601String();
+}
+
+ChannelEvent createChannelEvent(String jsonStr) {
+  var channelMap = jsonDecode(jsonStr);
+
+  print("creds = $jsonStr");
+
+  return ChannelEvent.fromJson(channelMap);
 }

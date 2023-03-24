@@ -1,4 +1,4 @@
-# op_app_flutter
+# Operator reference app
 
 A new Flutter project.
 

@@ -5,11 +5,7 @@ import 'dart:math';
 // import 'package:convert/convert.dart';
 
 import 'package:crypto/crypto.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-
-var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
-var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
 
 /*Uint8List hmacSha256(Uint8List hmacKey, Uint8List data) {
   final hmac = HMac(SHA256Digest(), 64) // HMAC SHA-256: block must be 64 bytes
@@ -43,12 +39,13 @@ bool isJSON(String str) {
 
 String getCurrentTimestamp() {
   var now = DateTime.now();
-  var formatter = DateFormat('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
-  return formatter.format(now.toUtc());
+  // var formatter = DateFormat('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
+  return now.toUtc().toIso8601String();
+  // return formatter.format(now.toUtc());
 }
 
-String generateHmacSha256Signature(String message) {
-  var key = utf8.encode(SECRET);
+String generateHmacSha256Signature(String message, String secret) {
+  var key = utf8.encode(secret);
   var bytes = utf8.encode(message);
   var hmacSha256 = Hmac(sha256, key); // Create a HMAC-SHA256 hasher.
   var digest = hmacSha256.convert(bytes); // Calculate the digest (signature).

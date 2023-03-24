@@ -134,30 +134,7 @@ var payloadJson = '''
     "isWebView": true
 }
 ''';
-/*var payloadJson = '''
-        {
-          "defaultUser": {
-            "address": {
-              "city": "San Francisco",
-              "postalCode": "94107",
-              "region": "CA",
-              "address": "123 Main St"
-            },
-            "dob": "1990-01-01",
-            "email": "john@example.com",
-            "ssn": "6789",
-            "first_name": "John",
-            "last_name": "Doe",
-            "phone": "555-555-5555"
-          },
-          "predefinedAmount": {
-            "values": 30,
-            "isEditable": false
-          },
-          "redirectUrl": "https://dev.paydala.com",
-          "isWebView": true
-        }
-      ''';*/
+
 Payload createPayload() {
   Map<String, dynamic> payloadMap = jsonDecode(payloadJson);
   var payload = Payload.fromJson(payloadMap);

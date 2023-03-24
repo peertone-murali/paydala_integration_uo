@@ -88,14 +88,20 @@ TransactionDetails createTxnDetails(String jsonStr) {
   if (kDebugMode) {
     print("txnDetails = $jsonStr");
   }
+  ChannelEvent? chEvent;
 
-  var chEvent = ChannelEvent.fromJson(jsonMap);
+  try {
+    chEvent = ChannelEvent.fromJson(jsonMap);
+  } catch (e) {
+    print("Error creating ChannelEvent: $e");
+  }
+
   var txnDetail = TransactionDetails(
-    txnRef: chEvent.payload.txnRef,
-    status: chEvent.payload.status,
+    txnRef: chEvent!.payload.txnRef,
+    status: chEvent!.payload.status,
     currencyId: 1,
-    amount: chEvent.payload.amount,
-    timeStamp: chEvent.payload.timeStamp,
+    amount: chEvent!.payload.amount,
+    timeStamp: chEvent!.payload.timeStamp,
   );
 
   return txnDetail;

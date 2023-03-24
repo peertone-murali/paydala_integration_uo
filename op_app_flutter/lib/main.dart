@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
 import 'package:op_app_flutter/src/payload.dart';
+import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 // import 'package:op_app_flutter/src/utils.dart';
@@ -50,9 +52,10 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: WalletHomePage(),
+            home: WalletHomePageStatefulWidget(), //WalletHomePage(),
             routes: {
-              '/wallet': (context) => WalletHomePage(),
+              '/wallet': (context) =>
+                  WalletHomePageStatefulWidget(), //WalletHomePage(),
             },
           );
   }
@@ -60,6 +63,16 @@ class MyApp extends StatelessWidget {
 
 class WalletHomePage extends StatelessWidget {
   final int balance = 1500;
+
+  void processTransaction(Object txnObject) {
+    if (txnObject is TransactionResponse) {
+      print("TransactionResponse: ${txnObject.toJson()}");
+    } else if (txnObject is TransactionDetails) {
+      print("ChannelEvent: ${txnObject.toJson()}");
+    } else {
+      print("Unknown object type");
+    }
+  }
 
   const WalletHomePage({super.key});
 
@@ -100,7 +113,8 @@ class WalletHomePage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => OperatorDepositScreen()));
+                        builder: (context) => OperatorDepositScreen(
+                            onTransaction: processTransaction)));
                 // MaterialPageRoute(
                 //   builder: (context) => PaydalaFlutterWidget(
                 //       title: "Deposit using Paydala",
@@ -144,6 +158,116 @@ class WalletHomePage extends StatelessWidget {
   }
 }
 
+class WalletHomePageStatefulWidget extends StatefulWidget {
+  const WalletHomePageStatefulWidget({Key? key}) : super(key: key);
+
+  @override
+  _WalletHomePageState createState() => _WalletHomePageState();
+}
+
+Map<int, int> usdToCoins = {};
+
+class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
+  int balance = 1500;
+
+  void processTransaction(Object txnObject) {
+    var txnAmount = 0.0;
+    if (txnObject is TransactionResponse) {
+      TransactionResponse txnResponse = txnObject;
+      for (var txnDetails in txnResponse.txnDetails) {
+        if (txnDetails.status == "success") txnAmount += txnDetails.amount;
+      }
+      print("TransactionResponse: ${txnObject.toJson()}");
+    } else if (txnObject is TransactionDetails) {
+      TransactionDetails txnDetails = txnObject;
+      if (txnDetails.status == "success") txnAmount += txnDetails.amount;
+      print("ChannelEvent: ${txnObject.toJson()}");
+    } else {
+      print("Unknown object type");
+    }
+    setState(() {
+      balance += usdToCoins[txnAmount.toInt()]!;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('My Wallet'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Balance',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Coins $balance',
+              style: TextStyle(
+                fontSize: 36.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OperatorDepositScreen(
+                              onTransaction: processTransaction,
+                            )));
+                // MaterialPageRoute(
+                //   builder: (context) => PaydalaFlutterWidget(
+                //       title: "Deposit using Paydala",
+                //       url: "https://flutter.dev",
+                //       payload: '{"email" : "john.doe@test.com"}'),
+                // ));
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.arrow_upward),
+                  // SizedBox(width: 8.0),
+                  Text('Deposit using Paydala'),
+                ],
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WithdrawScreen(balance: 1500),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.arrow_downward),
+                  Text('Withdraw using Paydala'),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class PaydalaDepositScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -159,7 +283,9 @@ class PaydalaDepositScreen extends StatelessWidget {
 }
 
 class OperatorDepositScreen extends StatefulWidget {
-  const OperatorDepositScreen({Key? key});
+  final ValueChanged<Object> onTransaction;
+  const OperatorDepositScreen({required this.onTransaction});
+  // const OperatorDepositScreen({Key? key});
 
   @override
   _OperatorDepositScreenState createState() => _OperatorDepositScreenState();
@@ -176,6 +302,16 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
     {'label': '100', 'amount': '20000', 'regular_tokens': '100'},
     {'label': '250', 'amount': '50000', 'regular_tokens': '250'},
   ];
+
+  @override
+  void initState() {
+    usdToCoins.clear();
+    Map<String, String> rowMap;
+    for (rowMap in _amounts) {
+      usdToCoins[int.parse(rowMap['label']!)] = int.parse(rowMap['amount']!);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +375,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                     MaterialPageRoute(
                       builder: (context) => // PaydalaDepositScreen()
                           PaydalaFlutterWidget(
+                        onTransaction: widget.onTransaction,
                         title: 'Paydala Deposit',
                         url:
                             "https://dev-widget.paydala.com?environment=development",

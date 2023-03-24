@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:op_app_flutter/src/channel_event.dart';
+import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
-import 'package:op_app_flutter/src/utils.dart';
+// import 'package:op_app_flutter/src/utils.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
+  final ValueChanged<Object> onTransaction;
   final String title;
   final String url;
   late String requestId;
@@ -19,7 +21,10 @@ class PaydalaFlutterWidget extends StatefulWidget {
   TransactionResponse? txnResponse;
 
   PaydalaFlutterWidget(
-      {required this.title, required this.url, required this.signedCreds}) {
+      {required this.onTransaction,
+      required this.title,
+      required this.url,
+      required this.signedCreds}) {
     txnResponse = createTxnResponse(signedCreds.creds);
     try {
       var credsMap = jsonDecode(signedCreds.creds);
@@ -113,6 +118,20 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
     );
   }
 
+  final String channelEventStr = '''
+{
+ "type": "transactionComplete",
+ "payload":{
+  "result": "success",
+  "refType": 2,
+  "status": "success",
+  "currencyId": 1,
+  "amount": 100.00,
+  "timeStamp": "2020-01-01T00:00:00Z",
+  "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002" 
+ }
+}''';
+
   JavascriptChannel _paydalaJavascriptChannel(
       BuildContext context, PaydalaFlutterWidget widget) {
     return JavascriptChannel(
@@ -127,33 +146,42 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           }
           // showMessageDialog(context, "Deposit result", message.message);
           // Navigator.pop(context);
-          var txnResponse = message.message;
+          // var txnResponse = message.message;
 
-          if (isJSON(txnResponse)) {
-            try {
-              final chEvent = ChannelEvent.fromJson(jsonDecode(txnResponse));
-            } catch (e) {
-              if (kDebugMode) {
-                print("JSON parse error : $e");
-              }
-            }
-            final Map<String, dynamic> data = json.decode(message.message);
-            List<dynamic> txnDetails = [];
-
-            try {
-              txnDetails = data['txnDetails'];
-            } catch (e) {
-              if (kDebugMode) {
-                print("Missing txtDetails: $e");
-              }
-            }
+          ChannelEvent? chEvent;
+          var txnResponse = channelEventStr;
+          try {
+            chEvent = createChannelEvent(txnResponse);
+          } catch (e) {
+            print("Error creating ChannelEvent: $e");
           }
+
+          final TransactionDetails txnDetail = createTxnDetails(txnResponse);
+          final Payload payload =
+              Payload.fromJson(jsonDecode(widget.signedCreds.creds)['payload']);
+          // final
+          txnDetail.amount = payload.predefinedAmount.values;
+          widget.txnResponse?.txnDetails.add(txnDetail);
+
+          widget.onTransaction(txnDetail);
+
+          if (chEvent?.type == "transactionComplete") {
+            widget.onTransaction(widget.onTransaction);
+
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/wallet',
+              (route) => false,
+            ).then((value) => setState(() {}));
+          }
+
           // Navigator.pushReplacementNamed(context, '/wallet');
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/wallet',
-            (route) => false,
-          ).then((value) => setState(() {}));
+          //   // Navigator.pushNamedAndRemoveUntil(
+          //   //   context,
+          //   //   '/wallet',
+          //   //   (route) => false,
+          //   // ).then((value) => setState(() {}));
+          // });
         });
   }
 }

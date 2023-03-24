@@ -166,7 +166,7 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           widget.onTransaction(txnDetail);
 
           if (chEvent?.type == "transactionComplete") {
-            widget.onTransaction(widget.onTransaction);
+            widget.onTransaction(widget.txnResponse as Object);
 
             Navigator.pushNamedAndRemoveUntil(
               context,

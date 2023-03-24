@@ -33,10 +33,12 @@ class TransactionResponse {
   Map<String, dynamic> toJson() => _$TransactionResponseToJson(this);
 
   static DateTime _dateTimeFromJson(String dateTime) =>
-      DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateTime);
+      // DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateTime);
+      DateTime.parse(dateTime).toUtc();
 
   static String _dateTimeToJson(DateTime dateTime) =>
-      DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(dateTime);
+      // DateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(dateTime);
+      dateTime.toUtc().toIso8601String();
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -62,10 +64,12 @@ class TransactionDetails {
   Map<String, dynamic> toJson() => _$TransactionDetailsToJson(this);
 
   static DateTime _dateTimeFromJson(String dateTime) =>
-      DateFormat("yyyy-MM-ddTHH:mm:ssZ").parse(dateTime);
+      // DateFormat("yyyy-MM-ddTHH:mm:ssZ").parse(dateTime);
+      DateTime.parse(dateTime).toUtc();
 
   static String _dateTimeToJson(DateTime dateTime) =>
-      DateFormat("yyyy-MM-ddTHH:mm:ssZ").format(dateTime);
+      // DateFormat("yyyy-MM-ddTHH:mm:ssZ").format(dateTime);
+      dateTime.toUtc().toIso8601String();
 }
 
 TransactionResponse createTxnResponse(String creds) {

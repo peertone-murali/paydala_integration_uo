@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
@@ -30,6 +31,8 @@ void main() => runApp(MyApp());
 //     );
 //   }
 // }
+int balance = 1500;
+TransactionResponse? txnResponse;
 
 class MyApp extends StatelessWidget {
   @override
@@ -62,7 +65,7 @@ class MyApp extends StatelessWidget {
 }
 
 class WalletHomePage extends StatelessWidget {
-  final int balance = 1500;
+  int balance = 1500;
 
   void processTransaction(Object txnObject) {
     if (txnObject is TransactionResponse) {
@@ -74,7 +77,7 @@ class WalletHomePage extends StatelessWidget {
     }
   }
 
-  const WalletHomePage({super.key});
+  WalletHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -168,26 +171,31 @@ class WalletHomePageStatefulWidget extends StatefulWidget {
 Map<int, int> usdToCoins = {};
 
 class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
-  int balance = 1500;
+  // int balance = 1500;
 
   void processTransaction(Object txnObject) {
-    var txnAmount = 0.0;
+    // var txnAmount = 0.0;
     if (txnObject is TransactionResponse) {
-      TransactionResponse txnResponse = txnObject;
-      for (var txnDetails in txnResponse.txnDetails) {
-        if (txnDetails.status == "success") txnAmount += txnDetails.amount;
-      }
-      print("TransactionResponse: ${txnObject.toJson()}");
+      txnResponse = txnObject;
+      // for (var txnDetails in txnResponse.txnDetails) {
+      //   if (txnDetails.status == "success") txnAmount += txnDetails.amount;
+      // }
+      print("TransactionResponse: ${txnResponse?.toJson()}");
     } else if (txnObject is TransactionDetails) {
       TransactionDetails txnDetails = txnObject;
-      if (txnDetails.status == "success") txnAmount += txnDetails.amount;
+      if (txnDetails.status == "success") {
+        try {
+          balance += usdToCoins[txnDetails.amount.toInt()]!;
+        } catch (e) {
+          if (kDebugMode) {
+            print("Error: $e");
+          }
+        }
+      }
       print("ChannelEvent: ${txnObject.toJson()}");
     } else {
       print("Unknown object type");
     }
-    setState(() {
-      balance += usdToCoins[txnAmount.toInt()]!;
-    });
   }
 
   @override

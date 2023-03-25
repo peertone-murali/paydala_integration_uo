@@ -31,7 +31,7 @@ void main() => runApp(MyApp());
 //     );
 //   }
 // }
-int balance = 1500;
+int balance = 0;
 TransactionResponse? txnResponse;
 
 class MyApp extends StatelessWidget {
@@ -45,9 +45,9 @@ class MyApp extends StatelessWidget {
             theme: CupertinoThemeData(
               primaryColor: Colors.blue,
             ),
-            home: WalletHomePage(),
+            home: WalletHomePageStatefulWidget(),
             routes: {
-              '/wallet': (context) => WalletHomePage(),
+              '/wallet': (context) => WalletHomePageStatefulWidget(),
             },
           )
         : MaterialApp(
@@ -126,7 +126,7 @@ class WalletHomePage extends StatelessWidget {
                 // ));
               },
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.arrow_upward),
                   // SizedBox(width: 8.0),
                   Text('Deposit using Paydala'),
@@ -143,7 +143,7 @@ class WalletHomePage extends StatelessWidget {
                 );
               },
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.arrow_downward),
                   //SizedBox(width: 8.0),
                   // SizedBox(
@@ -246,7 +246,7 @@ class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
                 // ));
               },
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.arrow_upward),
                   // SizedBox(width: 8.0),
                   Text('Deposit using Paydala'),
@@ -258,12 +258,13 @@ class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WithdrawScreen(balance: 1500),
+                    builder: (context) =>
+                        WithdrawScreen(balance: balance.toDouble()),
                   ),
                 );
               },
               child: Row(
-                children: [
+                children: const [
                   Icon(Icons.arrow_downward),
                   Text('Withdraw using Paydala'),
                 ],
@@ -331,7 +332,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
         child: DataTable(
           headingRowColor:
               MaterialStateColor.resolveWith((states) => Colors.grey[200]!),
-          columns: [
+          columns: const [
             DataColumn(label: Text('USD   ')),
             DataColumn(label: Text('Cash Coins ')),
             DataColumn(label: Text('Regular Coins')),

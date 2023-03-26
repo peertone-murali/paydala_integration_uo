@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:intl/intl.dart';
+import 'package:op_app_flutter/src/utils.dart';
 
 import 'channel_event.dart';
 
@@ -75,7 +76,7 @@ class TransactionDetails {
 TransactionResponse createTxnResponse(String creds) {
   var credsMap = jsonDecode(creds);
 
-  print("creds = $creds");
+  pdPrint("creds = $creds");
 
   return TransactionResponse(
       result: "",
@@ -89,15 +90,14 @@ TransactionResponse createTxnResponse(String creds) {
 TransactionDetails createTxnDetails(String jsonStr) {
   var jsonMap = jsonDecode(jsonStr);
 
-  if (kDebugMode) {
-    print("txnDetails = $jsonStr");
-  }
+  pdPrint("txnDetails = $jsonStr");
+
   ChannelEvent? chEvent;
 
   try {
     chEvent = ChannelEvent.fromJson(jsonMap);
   } catch (e) {
-    print("Error creating ChannelEvent: $e");
+    pdPrint("Error creating ChannelEvent: $e");
   }
 
   var txnDetail = TransactionDetails(

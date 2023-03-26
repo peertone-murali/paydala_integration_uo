@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:op_app_flutter/src/utils.dart';
 
 part 'channel_event.g.dart';
 
@@ -54,7 +55,7 @@ class EventPayload {
 ChannelEvent createChannelEvent(String jsonStr) {
   var channelMap = jsonDecode(jsonStr);
 
-  print("creds = $jsonStr");
+  pdPrint("creds = $jsonStr");
 
   return ChannelEvent.fromJson(channelMap);
 }

@@ -5,9 +5,6 @@ import 'package:flutter/foundation.dart';
 // import 'package:crypto/crypto.dart';
 import 'package:op_app_flutter/src/utils.dart';
 
-// Define the endpoint URL and the data to send in the request body
-const String endpointUrl = 'http://localhost:8080/getSignedCreds';
-
 class SignedCreds {
   final String creds;
   final String signature;

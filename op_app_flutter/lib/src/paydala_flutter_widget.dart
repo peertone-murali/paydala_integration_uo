@@ -10,6 +10,7 @@ import 'package:op_app_flutter/src/channel_event.dart';
 import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
+import 'package:op_app_flutter/src/utils.dart';
 // import 'package:op_app_flutter/src/utils.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
@@ -30,9 +31,7 @@ class PaydalaFlutterWidget extends StatefulWidget {
       var credsMap = jsonDecode(signedCreds.creds);
       requestId = credsMap['payload']["requestId"];
     } catch (e) {
-      if (kDebugMode) {
-        print("Error decoding JSON: $e");
-      }
+      pdPrint("Error decoding JSON: $e");
     }
   }
 
@@ -91,24 +90,24 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
             );
           },
           onProgress: (int progress) {
-            print('WebView is loading (progress : $progress%)');
+            pdPrint('WebView is loading (progress : $progress%)');
           },
           javascriptChannels: <JavascriptChannel>{
             _paydalaJavascriptChannel(context, widget),
           },
           navigationDelegate: (NavigationRequest request) {
             if (request.url.startsWith('https://www.youtube.com/')) {
-              print('blocking navigation to $request}');
+              pdPrint('blocking navigation to $request}');
               return NavigationDecision.prevent;
             }
-            print('allowing navigation to $request');
+            pdPrint('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
           onPageStarted: (String url) {
-            print('Page started loading: $url');
+            pdPrint('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            print('Page finished loading: $url');
+            pdPrint('Page finished loading: $url');
           },
           gestureNavigationEnabled: true,
           backgroundColor: const Color(0x00000000),
@@ -141,9 +140,9 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           // ScaffoldMessenger.of(context).showSnackBar(
           //   SnackBar(content: Text("txnDetails ${message.message}")),
           // );
-          if (kDebugMode) {
-            print("txnDetails JSON = ${message.message}");
-          }
+
+          pdPrint("txnDetails JSON = ${message.message}");
+
           // showMessageDialog(context, "Deposit result", message.message);
           // Navigator.pop(context);
           // var txnResponse = message.message;
@@ -153,7 +152,7 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           try {
             chEvent = createChannelEvent(txnResponse);
           } catch (e) {
-            print("Error creating ChannelEvent: $e");
+            pdPrint("Error creating ChannelEvent: $e");
           }
 
           final TransactionDetails txnDetail = createTxnDetails(txnResponse);

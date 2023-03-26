@@ -5,6 +5,7 @@ import 'dart:math';
 // import 'package:convert/convert.dart';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 /*Uint8List hmacSha256(Uint8List hmacKey, Uint8List data) {
@@ -73,4 +74,12 @@ String generateGuid() {
 String generateUuid() {
   var uuid = Uuid();
   return uuid.v4();
+}
+
+void pdPrint(String message) {
+  assert(() {
+    // print(message);
+    debugPrint(message, wrapWidth: 80);
+    return true;
+  }());
 }

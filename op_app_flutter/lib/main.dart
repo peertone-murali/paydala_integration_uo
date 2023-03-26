@@ -69,11 +69,11 @@ class WalletHomePage extends StatelessWidget {
 
   void processTransaction(Object txnObject) {
     if (txnObject is TransactionResponse) {
-      print("TransactionResponse: ${txnObject.toJson()}");
+      pdPrint("TransactionResponse: ${txnObject.toJson()}");
     } else if (txnObject is TransactionDetails) {
-      print("ChannelEvent: ${txnObject.toJson()}");
+      pdPrint("ChannelEvent: ${txnObject.toJson()}");
     } else {
-      print("Unknown object type");
+      pdPrint("Unknown object type");
     }
   }
 
@@ -180,21 +180,19 @@ class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
       // for (var txnDetails in txnResponse.txnDetails) {
       //   if (txnDetails.status == "success") txnAmount += txnDetails.amount;
       // }
-      print("TransactionResponse: ${txnResponse?.toJson()}");
+      pdPrint("TransactionResponse: ${txnResponse?.toJson()}");
     } else if (txnObject is TransactionDetails) {
       TransactionDetails txnDetails = txnObject;
       if (txnDetails.status == "success") {
         try {
           balance += usdToCoins[txnDetails.amount.toInt()]!;
         } catch (e) {
-          if (kDebugMode) {
-            print("Error: $e");
-          }
+          pdPrint("Error: $e");
         }
       }
-      print("ChannelEvent: ${txnObject.toJson()}");
+      pdPrint("ChannelEvent: ${txnObject.toJson()}");
     } else {
-      print("Unknown object type");
+      pdPrint("Unknown object type");
     }
   }
 

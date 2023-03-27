@@ -15,6 +15,7 @@ Payload _$PayloadFromJson(Map<String, dynamic> json) => Payload(
           json['predefinedAmount'] as Map<String, dynamic>),
       redirectUrl: json['redirectUrl'] as String,
       isWebView: json['isWebView'] as bool,
+      userFlow: UserFlow.fromJson(json['userFlow'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PayloadToJson(Payload instance) => <String, dynamic>{
@@ -24,6 +25,15 @@ Map<String, dynamic> _$PayloadToJson(Payload instance) => <String, dynamic>{
       'predefinedAmount': instance.predefinedAmount.toJson(),
       'redirectUrl': instance.redirectUrl,
       'isWebView': instance.isWebView,
+      'userFlow': instance.userFlow.toJson(),
+    };
+
+UserFlow _$UserFlowFromJson(Map<String, dynamic> json) => UserFlow(
+      guestOnly: json['guestOnly'] as bool,
+    );
+
+Map<String, dynamic> _$UserFlowToJson(UserFlow instance) => <String, dynamic>{
+      'guestOnly': instance.guestOnly,
     };
 
 DefaultUser _$DefaultUserFromJson(Map<String, dynamic> json) => DefaultUser(

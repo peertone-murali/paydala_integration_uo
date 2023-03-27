@@ -12,20 +12,33 @@ class Payload {
   PredefinedAmount predefinedAmount;
   String redirectUrl;
   bool isWebView;
+  UserFlow userFlow;
 
-  Payload({
-    required this.requestId,
-    required this.customerId,
-    required this.defaultUser,
-    required this.predefinedAmount,
-    required this.redirectUrl,
-    required this.isWebView,
-  });
+  Payload(
+      {required this.requestId,
+      required this.customerId,
+      required this.defaultUser,
+      required this.predefinedAmount,
+      required this.redirectUrl,
+      required this.isWebView,
+      required this.userFlow});
 
   factory Payload.fromJson(Map<String, dynamic> json) =>
       _$PayloadFromJson(json);
 
   Map<String, dynamic> toJson() => _$PayloadToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserFlow {
+  final bool guestOnly;
+
+  UserFlow({required this.guestOnly});
+
+  factory UserFlow.fromJson(Map<String, dynamic> json) =>
+      _$UserFlowFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserFlowToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -131,7 +144,10 @@ var payloadJson = '''
       "isEditable": false
     },
     "redirectUrl": "https://dev.paydala.com",
-    "isWebView": true
+    "isWebView": true,
+    "userFlow": {
+      "guestOnly": true
+    }
 }
 ''';
 

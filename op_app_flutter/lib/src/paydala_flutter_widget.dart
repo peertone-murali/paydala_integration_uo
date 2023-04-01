@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
@@ -118,19 +118,33 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
     );
   }
 
-  final String channelEventStr = '''
-{
- "type": "transactionComplete",
- "payload":{
-  "result": "success",
-  "refType": 2,
-  "status": "success",
-  "currencyId": 1,
-  "amount": 100.00,
-  "timeStamp": "2020-01-01T00:00:00Z",
-  "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002" 
- }
-}''';
+//   final String channelEventStr = '''
+// {
+//  "type": "transactionComplete",
+//  "payload":{
+//   "result": "success",
+//   "refType": 2,
+//   "status": "success",
+//   "currencyId": 1,
+//   "amount": 100.00,
+//   "timeStamp": "2020-01-01T00:00:00Z",
+//   "txnRef": "3b524d4-c254-11ed-afa1-0242ac120002"
+//  }
+// }''';
+
+//   final String channelEventStr1 = '''
+// {
+//   "type": "transactionComplete",
+//   "singleTxnDetail": {
+//     "refType": 1,
+//     "status": "success",
+//     "currencyId": 1,
+//     "amount": 20,
+//     "timeStamp": "2023-03-30T11:06:08.682Z",
+//     "txnRef": "wpiZa9tRK"
+//   }
+// }
+// ''';
 
   JavascriptChannel _paydalaJavascriptChannel(
       BuildContext context, PaydalaFlutterWidget widget) {
@@ -147,9 +161,15 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           // showMessageDialog(context, "Deposit result", message.message);
           // Navigator.pop(context);
           // var txnResponse = message.message;
+          final jsonMap = jsonDecode(message.message);
+          if (jsonMap["type"] == "closePaydala") {
+            Navigator.pop(context);
+            return;
+          }
 
           ChannelEvent? chEvent;
-          var txnResponse = channelEventStr;
+          var txnResponse = message.message;
+          //channelEventStr;
           try {
             chEvent = createChannelEvent(txnResponse);
           } catch (e) {
@@ -159,6 +179,9 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           final TransactionDetails txnDetail = createTxnDetails(txnResponse);
           final Payload payload =
               Payload.fromJson(jsonDecode(widget.signedCreds.creds)['payload']);
+          // if (chEvent?.type == "paydalaClose") {
+          //   Navigator.pop(context);
+          // }
           // final
           txnDetail.amount = payload.predefinedAmount.values;
           widget.txnResponse?.txnDetails.add(txnDetail);
@@ -167,22 +190,22 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
 
           if (chEvent?.type == "transactionComplete") {
             widget.onTransaction(widget.txnResponse as Object);
-
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/wallet',
               (route) => false,
             ).then((value) => setState(() {}));
           }
-
-          // Navigator.pushReplacementNamed(context, '/wallet');
-          //   // Navigator.pushNamedAndRemoveUntil(
-          //   //   context,
-          //   //   '/wallet',
-          //   //   (route) => false,
-          //   // ).then((value) => setState(() {}));
-          // });
         });
+
+    // Navigator.pushReplacementNamed(context, '/wallet');
+    //   // Navigator.pushNamedAndRemoveUntil(
+    //   //   context,
+    //   //   '/wallet',
+    //   //   (route) => false,
+    //   // ).then((value) => setState(() {}));
+    // });
+    //});
   }
 }
 

@@ -8,6 +8,7 @@ part 'channel_event.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ChannelEvent {
   String type;
+  @JsonKey(name: 'singleTxnDetail')
   EventPayload payload;
 
   ChannelEvent({required this.type, required this.payload});
@@ -20,7 +21,8 @@ class ChannelEvent {
 
 @JsonSerializable(explicitToJson: true)
 class EventPayload {
-  String result;
+  @JsonKey(defaultValue: null)
+  String? result;
   int refType;
   String status;
   int currencyId;
@@ -29,7 +31,6 @@ class EventPayload {
   DateTime timeStamp;
   String txnRef;
 
-  @JsonKey(name: 'payload')
   EventPayload({
     required this.result,
     required this.refType,

@@ -73,7 +73,12 @@ void main() {
           values: 30,
           isEditable: false,
         ),
-      );
+        userFlow: {
+          guestOnly: true,
+        },
+
+    });
+
 
       // Act
       final json = payload.toJson();

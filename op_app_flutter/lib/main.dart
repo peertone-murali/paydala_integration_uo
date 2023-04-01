@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
@@ -302,12 +302,12 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
   int? _selectedAmount;
 
   final List<Map<String, String>> _amounts = [
-    {'label': '10', 'amount': '1000', 'regular_tokens': '10'},
-    {'label': '20', 'amount': '2000', 'regular_tokens': '20'},
-    {'label': '25', 'amount': '5000', 'regular_tokens': '25'},
-    {'label': '50', 'amount': '10000', 'regular_tokens': '50'},
-    {'label': '100', 'amount': '20000', 'regular_tokens': '100'},
-    {'label': '250', 'amount': '50000', 'regular_tokens': '250'},
+    {'usd': '10', 'cash_coins': '1000', 'regular_coins': '10'},
+    {'usd': '20', 'cash_coins': '2000', 'regular_coins': '20'},
+    {'usd': '50', 'cash_coins': '5000', 'regular_coins': '50'},
+    {'usd': '100', 'cash_coins': '10000', 'regular_coins': '100'},
+    {'usd': '200', 'cash_coins': '20000', 'regular_coins': '200'},
+    {'usd': '300', 'cash_coins': '30000', 'regular_coins': '300'},
   ];
 
   @override
@@ -315,7 +315,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
     usdToCoins.clear();
     Map<String, String> rowMap;
     for (rowMap in _amounts) {
-      usdToCoins[int.parse(rowMap['label']!)] = int.parse(rowMap['amount']!);
+      usdToCoins[int.parse(rowMap['usd']!)] = int.parse(rowMap['cash_coins']!);
     }
     super.initState();
   }
@@ -345,10 +345,10 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   });
                 },
                 cells: [
-                  //DataCell(Text('\$ ${_amounts[index]['label']}')),
-                  DataCell(Text(_amounts[index]['label']!)),
-                  DataCell(Text(_amounts[index]['amount']!)),
-                  DataCell(Text(_amounts[index]['regular_tokens']!)),
+                  //DataCell(Text('\$ ${_amounts[index]['usd']}')),
+                  DataCell(Text(_amounts[index]['usd']!)),
+                  DataCell(Text(_amounts[index]['cash_coins']!)),
+                  DataCell(Text(_amounts[index]['regular_coins']!)),
                 ],
               ),
           ],
@@ -364,7 +364,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   var payload = createPayload();
                   if (_selectedAmount != null) {
                     final selectedRow = _amounts[_selectedAmount!];
-                    final usdValue = selectedRow['label'];
+                    final usdValue = selectedRow['usd'];
                     final usdValueDouble = double.parse(usdValue!);
                     payload.predefinedAmount.values = usdValueDouble;
                     // Clipboard.setData(ClipboardData(text: usdValue));

@@ -8,17 +8,18 @@ part of 'channel_event.dart';
 
 ChannelEvent _$ChannelEventFromJson(Map<String, dynamic> json) => ChannelEvent(
       type: json['type'] as String,
-      payload: EventPayload.fromJson(json['payload'] as Map<String, dynamic>),
+      payload: EventPayload.fromJson(
+          json['singleTxnDetail'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ChannelEventToJson(ChannelEvent instance) =>
     <String, dynamic>{
       'type': instance.type,
-      'payload': instance.payload.toJson(),
+      'singleTxnDetail': instance.payload.toJson(),
     };
 
 EventPayload _$EventPayloadFromJson(Map<String, dynamic> json) => EventPayload(
-      result: json['result'] as String,
+      result: json['result'] as String?,
       refType: json['refType'] as int,
       status: json['status'] as String,
       currencyId: json['currencyId'] as int,

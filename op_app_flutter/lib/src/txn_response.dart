@@ -102,10 +102,10 @@ TransactionDetails createTxnDetails(String jsonStr) {
 
   var txnDetail = TransactionDetails(
     txnRef: chEvent!.payload.txnRef,
-    status: chEvent!.payload.status,
+    status: chEvent.payload.status,
     currencyId: 1,
-    amount: chEvent!.payload.amount,
-    timeStamp: chEvent!.payload.timeStamp,
+    amount: chEvent.payload.amount,
+    timeStamp: chEvent.payload.timeStamp,
   );
 
   return txnDetail;

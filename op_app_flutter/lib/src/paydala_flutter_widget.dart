@@ -152,15 +152,9 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
         name: 'PayDala',
         onMessageReceived: (JavascriptMessage message) {
           // ignore: deprecated_member_use
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(content: Text("txnDetails ${message.message}")),
-          // );
 
           pdPrint("txnDetails JSON = ${message.message}");
 
-          // showMessageDialog(context, "Deposit result", message.message);
-          // Navigator.pop(context);
-          // var txnResponse = message.message;
           final jsonMap = jsonDecode(message.message);
           if (jsonMap["type"] == "closePaydala") {
             Navigator.pop(context);
@@ -169,7 +163,7 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
 
           ChannelEvent? chEvent;
           var txnResponse = message.message;
-          //channelEventStr;
+
           try {
             chEvent = createChannelEvent(txnResponse);
           } catch (e) {
@@ -179,10 +173,7 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           final TransactionDetails txnDetail = createTxnDetails(txnResponse);
           final Payload payload =
               Payload.fromJson(jsonDecode(widget.signedCreds.creds)['payload']);
-          // if (chEvent?.type == "paydalaClose") {
-          //   Navigator.pop(context);
-          // }
-          // final
+
           txnDetail.amount = payload.predefinedAmount.values;
           widget.txnResponse?.txnDetails.add(txnDetail);
 
@@ -197,15 +188,6 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
             ).then((value) => setState(() {}));
           }
         });
-
-    // Navigator.pushReplacementNamed(context, '/wallet');
-    //   // Navigator.pushNamedAndRemoveUntil(
-    //   //   context,
-    //   //   '/wallet',
-    //   //   (route) => false,
-    //   // ).then((value) => setState(() {}));
-    // });
-    //});
   }
 }
 

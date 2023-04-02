@@ -8,27 +8,6 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
-/*Uint8List hmacSha256(Uint8List hmacKey, Uint8List data) {
-  final hmac = HMac(SHA256Digest(), 64) // HMAC SHA-256: block must be 64 bytes
-    ..init(KeyParameter(hmacKey));
-
-  return hmac.process(data);
-}
-
-String generateHmacSha256SignaturePc(String message) {
-  Uint8List dataBytes = Uint8List.fromList(message.codeUnits);
-  Uint8List keyBytes = Uint8List.fromList(SECRET.codeUnits);
-// void main(List<String> args) {
-  // final key = utf8.encode(SECRET); // first argument is the key
-  // final data = utf8.encode(message); // second argument is the data
-
-  final hmacValue = hmacSha256(keyBytes, dataBytes);
-  return utf16.decode(hmacValue);
-  // return String.fromCharCodes(hmacValue);
-  // print('HMAC SHA-256: $hmacValue');
-
-}*/
-
 bool isJSON(String str) {
   try {
     jsonDecode(str);
@@ -40,9 +19,7 @@ bool isJSON(String str) {
 
 String getCurrentTimestamp() {
   var now = DateTime.now();
-  // var formatter = DateFormat('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
   return now.toUtc().toIso8601String();
-  // return formatter.format(now.toUtc());
 }
 
 String generateHmacSha256Signature(String message, String secret) {

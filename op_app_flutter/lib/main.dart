@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
@@ -9,160 +8,46 @@ import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
-// import 'package:op_app_flutter/src/utils.dart';
-// import 'package:op_app_flutter/src/paydala_webview.dart';
 
 void main() => runApp(MyApp());
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Wallet App',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: WalletHomePage(),
-//       routes: {
-//         '/wallet': (context) => WalletHomePage(),
-//       },
-//     );
-//   }
-// }
-int balance = 0;
-TransactionResponse? txnResponse;
+// int balance = 0;
+// TransactionResponse? txnResponse;
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
-    return isIOS
+    return /* isIOS
         ? CupertinoApp(
             title: 'Wallet App',
             theme: CupertinoThemeData(
               primaryColor: Colors.blue,
             ),
-            home: WalletHomePageStatefulWidget(),
+            home: WalletHomePageWidget(),
             routes: {
-              '/wallet': (context) => WalletHomePageStatefulWidget(),
+              '/wallet': (context) => WalletHomePageWidget(),
             },
           )
-        : MaterialApp(
-            title: 'Wallet App',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: WalletHomePageStatefulWidget(), //WalletHomePage(),
-            routes: {
-              '/wallet': (context) =>
-                  WalletHomePageStatefulWidget(), //WalletHomePage(),
-            },
-          );
-  }
-}
-
-class WalletHomePage extends StatelessWidget {
-  int balance = 1500;
-
-  void processTransaction(Object txnObject) {
-    if (txnObject is TransactionResponse) {
-      pdPrint("TransactionResponse: ${txnObject.toJson()}");
-    } else if (txnObject is TransactionDetails) {
-      pdPrint("ChannelEvent: ${txnObject.toJson()}");
-    } else {
-      pdPrint("Unknown object type");
-    }
-  }
-
-  WalletHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('My Wallet'),
+        : */
+        MaterialApp(
+      title: 'Wallet App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Balance',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Coins $balance',
-              style: TextStyle(
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OperatorDepositScreen(
-                            onTransaction: processTransaction)));
-                // MaterialPageRoute(
-                //   builder: (context) => PaydalaFlutterWidget(
-                //       title: "Deposit using Paydala",
-                //       url: "https://flutter.dev",
-                //       payload: '{"email" : "john.doe@test.com"}'),
-                // ));
-              },
-              child: Row(
-                children: const [
-                  Icon(Icons.arrow_upward),
-                  // SizedBox(width: 8.0),
-                  Text('Deposit using Paydala'),
-                ],
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => WithdrawScreen(balance: 1500),
-                  ),
-                );
-              },
-              child: Row(
-                children: const [
-                  Icon(Icons.arrow_downward),
-                  //SizedBox(width: 8.0),
-                  // SizedBox(
-                  //   height: 40.0,
-                  //   child: Text('Withdraw using Paydala'),
-                  // ),
-                  Text('Withdraw using Paydala'),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+      home: WalletHomePageWidget(),
+      routes: {
+        '/wallet': (context) => WalletHomePageWidget(),
+      },
     );
   }
 }
 
-class WalletHomePageStatefulWidget extends StatefulWidget {
-  const WalletHomePageStatefulWidget({Key? key}) : super(key: key);
+class WalletHomePageWidget extends StatefulWidget {
+  const WalletHomePageWidget({Key? key}) : super(key: key);
 
   @override
   _WalletHomePageState createState() => _WalletHomePageState();
@@ -170,8 +55,10 @@ class WalletHomePageStatefulWidget extends StatefulWidget {
 
 Map<int, int> usdToCoins = {};
 
-class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
+class _WalletHomePageState extends State<WalletHomePageWidget> {
   // int balance = 1500;
+  static int balance = 0;
+  static TransactionResponse? txnResponse;
 
   void processTransaction(Object txnObject) {
     // var txnAmount = 0.0;
@@ -236,12 +123,6 @@ class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
                         builder: (context) => OperatorDepositScreen(
                               onTransaction: processTransaction,
                             )));
-                // MaterialPageRoute(
-                //   builder: (context) => PaydalaFlutterWidget(
-                //       title: "Deposit using Paydala",
-                //       url: "https://flutter.dev",
-                //       payload: '{"email" : "john.doe@test.com"}'),
-                // ));
               },
               child: Row(
                 children: const [
@@ -275,23 +156,25 @@ class _WalletHomePageState extends State<WalletHomePageStatefulWidget> {
   }
 }
 
-class PaydalaDepositScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Deposit using Paydala'),
-      ),
-      body: Center(
-        child: Text('Paydala Flutter widget for deposit'),
-      ),
-    );
-  }
-}
+// class PaydalaDepositScreen extends StatelessWidget {
+//   const PaydalaDepositScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Deposit using Paydala'),
+//       ),
+//       body: Center(
+//         child: Text('Paydala Flutter widget for deposit'),
+//       ),
+//     );
+//   }
+// }
 
 class OperatorDepositScreen extends StatefulWidget {
   final ValueChanged<Object> onTransaction;
-  const OperatorDepositScreen({required this.onTransaction});
+  const OperatorDepositScreen({super.key, required this.onTransaction});
   // const OperatorDepositScreen({Key? key});
 
   @override
@@ -380,8 +263,7 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => // PaydalaDepositScreen()
-                          PaydalaFlutterWidget(
+                      builder: (context) => PaydalaFlutterWidget(
                         onTransaction: widget.onTransaction,
                         title: 'Paydala Deposit',
                         url:
@@ -389,7 +271,6 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                         signedCreds: signedCreds,
                       ),
                     ),
-                    // PaydalaDepositScreen()));
                   );
                 }
               : null,
@@ -401,6 +282,8 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
 }
 
 class PaydalaWithdrawScreen extends StatelessWidget {
+  const PaydalaWithdrawScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -417,11 +300,11 @@ class PaydalaWithdrawScreen extends StatelessWidget {
 class WithdrawScreen extends StatelessWidget {
   final double balance;
 
-  WithdrawScreen({required this.balance});
+  const WithdrawScreen({super.key, required this.balance});
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _controller = TextEditingController(text: '45');
+    TextEditingController controller = TextEditingController(text: '0');
 
     return Scaffold(
       appBar: AppBar(
@@ -464,7 +347,7 @@ class WithdrawScreen extends StatelessWidget {
                     SizedBox(width: 8.0),
                     Expanded(
                       child: TextField(
-                        controller: _controller,
+                        controller: controller,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Enter a number',
@@ -483,7 +366,8 @@ class WithdrawScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  'To withdraw money through Paydala wallet, you need to log in to the Paydala wallet account in the next step. If you do not have a Paydala wallet account, you are required to register using the same email that you used to deposit. You will not be allowed to withdraw as a guest.',
+                  'While withdrawing money through Paydala wallet, the same wallet / identity (email) used during the first deposit will be used.',
+                  // 'To withdraw money through Paydala wallet, you need to log in to the Paydala wallet account in the next step. If you do not have a Paydala wallet account, you are required to register using the same email that you used to deposit. You will not be allowed to withdraw as a guest.',
                   style: TextStyle(fontSize: 16.0),
                   textAlign: TextAlign.center,
                 ),
@@ -497,22 +381,6 @@ class WithdrawScreen extends StatelessWidget {
                 String url =
                     "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
                 showBlockingDialog(context, "Paydala", "Not yet integrated");
-                // Navigator.pushNamedAndRemoveUntil(
-                //   context,
-                //   '/wallet',
-                //   (route) => false,
-                // );
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => // PaydalaWithdrawScreen()
-                //         PaydalaFlutterWidget(
-                //             title: 'Login & withdraw',
-                //             url: url,
-                //             payload: '{"email" : "john.doe@test.com"}'),
-                //   ),
-                //   // PaydalaDepositScreen()));
-                // );
               },
               child: Text('Withdraw'),
             ),

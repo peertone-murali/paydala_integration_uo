@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 import requests
 import json
 from hashlib import sha256
@@ -6,8 +7,6 @@ from util import *
 
 API_SECRET_KEY = SECRET_KEY
 
-#baseUrl = "http://localhost:8000"
-baseUrl = "http://localhost:8000"
 payload = {
     "email": "john.smith@demora.org", 
     "amount": "10.0", 
@@ -24,7 +23,7 @@ payload_dict = json.loads(payloadStr)
 
 headers = {"X-Request-Signature": signature, "Content-Type": "application/json"}
 
-response = requests.post(baseUrl + "/webhookConfirmation", data=payloadStr, headers=headers)
+response = requests.post(urljoin(op_base_url, "/webhookConfirmation"), data=payloadStr, headers=headers)
 
 # print("signature = ",signature)
 # print("httpStatus = ",response.status_code)

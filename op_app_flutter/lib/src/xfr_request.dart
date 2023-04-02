@@ -35,6 +35,7 @@ class AccountDetails {
   final String accountNo;
   final String routingNo;
   final String swiftCode;
+  final String accountType;
 
   AccountDetails({
     required this.accountName,
@@ -42,6 +43,7 @@ class AccountDetails {
     required this.accountNo,
     required this.routingNo,
     required this.swiftCode,
+    required this.accountType,
   });
 
   factory AccountDetails.fromJson(Map<String, dynamic> json) =>

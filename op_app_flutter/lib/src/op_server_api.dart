@@ -10,8 +10,8 @@ import 'package:op_app_flutter/src/utils.dart';
 var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
 var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
 // Define the endpoint URL and the data to send in the request body
-const String operatorBaseUrl = 'http://localhost:8080/getSignedCreds';
-var paydalaBaseUrl = "https://dev-api.paydala.com";
+const String opBaseUrl = 'http://localhost:8080/getSignedCreds';
+var pdBaseUrl = "https://dev-api.paydala.com";
 
 /* This function is called by the Paydala flutter widget to get the signed credentials
  * from the operator's server. Hence the endpoint needs to implemented on the operator's 
@@ -29,7 +29,7 @@ SignedCreds getSignedCredsServer(String payload) {
   final headers = {'Content-Type': 'application/json'};
 // Make the POST request
   http
-      .post(Uri.parse(paydalaBaseUrl), headers: headers, body: payload)
+      .post(Uri.parse(pdBaseUrl), headers: headers, body: payload)
       .timeout(const Duration(seconds: 10))
       .then((response) {
     if (response.statusCode == 200) {
@@ -88,7 +88,7 @@ TransactionResponse? getTxnStatusLocal1(int refType, String txnRef) {
   try {
     final response = http
         .post(
-      Uri.parse("$paydalaBaseUrl/transactions/status"),
+      Uri.parse("$pdBaseUrl/transactions/status"),
       headers: headers,
       body: body,
     )
@@ -141,7 +141,7 @@ TransactionResponse? getTxnStatusLocal(int refType, String txnRef) {
 
   final dio = Dio();
   final response = dio
-      .post("$paydalaBaseUrl/transactions/status",
+      .post("$pdBaseUrl/transactions/status",
           data: body, options: Options(headers: headers))
       .then((response) {
     pdPrint("getTxnStatusLocal: ${response.data}");

@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
-// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
@@ -11,7 +9,6 @@ import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
-// import 'package:op_app_flutter/src/utils.dart';
 
 class PaydalaFlutterWidget extends StatefulWidget {
   final ValueChanged<Object> onTransaction;

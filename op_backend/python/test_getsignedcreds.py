@@ -1,9 +1,11 @@
 import requests
 from requests.structures import CaseInsensitiveDict
 from util.signedcreds import *
+from util import *
 import json
+from urllib.parse import urljoin
 
-url = "http://localhost:8000/getSignedCreds"
+url = urljoin(pd_base_url,"/getSignedCreds")
 
 headers = CaseInsensitiveDict()
 headers["Content-Type"] = "application/json"

@@ -1,6 +1,7 @@
 import requests
+from urllib.parse import urljoin
 
-url = "http://localhost:8000/txn-details"
+url = urljoin(op_base_url, "txn-details")
 payload = {"refType": 2, "txnRef": "123456"}
 
 response = requests.post(url, json=payload)

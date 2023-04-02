@@ -1,8 +1,5 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:intl/intl.dart';
 import 'package:op_app_flutter/src/utils.dart';
 
 import 'channel_event.dart';

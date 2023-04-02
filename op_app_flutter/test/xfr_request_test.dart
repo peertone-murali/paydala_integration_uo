@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
-import 'package:op_app_flutter/src/xfr_payload.dart';
+import 'package:op_app_flutter/src/xfr_request.dart';
 
 void main() {
   group('TransferRequest', () {

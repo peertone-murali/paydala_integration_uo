@@ -46,7 +46,7 @@ def webhook_confirmation(request: HttpRequest):
             raise HttpResponseBadRequest("X-Request-Signature header is missing")
         
         # Create the signature using the API_SECRET_KEY and the payload
-        signature = hmac.new(API_SECRET_KEY.encode(), str(payload).encode(), sha256).hexdigest()
+        signature = hmac.new(API_SECRET_KEY.encode(), json.dumps(payload).encode(), sha256).hexdigest()
     
         # Compare the signature in the X-Request-Signature header with the calculated signature
         if not hmac.compare_digest(signature, X_Request_Signature):

@@ -12,7 +12,7 @@ from datetime import datetime
 import hmac
 
 sys.path.append('..')  # Add parent directory to path
-from signedcreds.signedcreds import *
+from util.signedcreds import *
 
 API_SECRET_KEY = SECRET_KEY
 

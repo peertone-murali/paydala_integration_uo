@@ -8,9 +8,16 @@ import hmac
 from hashlib import sha256
 import logging
 
+
+from rest_framework.decorators import api_view
+
+import hashlib
+
+from datetime import datetime
+
 sys.path.append('..')  # Add parent directory to path
 
-from signedcreds.signedcreds import *
+from util.signedcreds import *
 
 API_SECRET_KEY = SECRET_KEY
 
@@ -59,3 +66,82 @@ def webhook_confirmation(request: HttpRequest):
     else:
         return JsonResponse({'message': 'Hello, World!'})
 
+
+@csrf_exempt
+@require_POST
+def txn_status(request):
+    # Extract the JSON payload from the request data
+    data = json.loads(request.body)
+
+    # Extract the required headers from the request
+    access_sign = request.headers.get('CB_ACCESS_SIGN')
+    access_timestamp = request.headers.get('CB_ACCESS_TIMESTAMP')
+    access_client_id = request.headers.get('CB_ACCESS_CLIENT_ID')
+
+    # Compute the HMAC signature using the access timestamp and payload
+    message = access_timestamp + json.dumps(data)
+    signature = hmac.new(
+        API_SECRET_KEY.encode(),
+        msg=message.encode(),
+        digestmod=sha256
+    ).hexdigest()
+
+    # Verify that the signature matches the one in the header
+    if signature != access_sign:
+        return JsonResponse({'error': 'Invalid access signature'})
+    
+    # Compare the signature in the X-Request-Signature header with the calculated signature
+    if not hmac.compare_digest(signature, access_sign):
+        raise HttpResponseBadRequest("Invalid signature")
+
+    # Create the response payload
+    result = 'processed'
+    ref_type = int(data['refType'])
+    txn_ref = data['txnRef']
+    timestamp = datetime.utcnow().isoformat() + 'Z'
+    txn_details = [{
+        'txnRef': txn_ref,
+        'status': 'processed',
+        'currencyId': 1,
+        'amount': 10,
+        'timeStamp': timestamp,
+    }]
+    response_data = {
+        'result': result,
+        'refType': ref_type,
+        'txnRef': txn_ref,
+        'timeStamp': timestamp,
+        'txnDetails': txn_details,
+    }
+
+    return JsonResponse(response_data)
+
+
+
+
+url = 'https://dev-api.paydala.com/transactions/txnStatus'
+client_id = '6f5df04e484640e98e2310268b5dbbd4'
+secret_key = 'your-secret-key-here'
+
+payload = {
+    'refType': '1',
+    'txnRef': 'abcdef'
+}
+
+timestamp = int(datetime.now().timestamp())
+
+# Generate CB-ACCESS-SIGN header
+payload_string = json.dumps(payload)
+message = str(timestamp) + payload_string
+signature = hmac.new(secret_key.encode(), message.encode(), hashlib.sha256).hexdigest()
+
+headers = {
+    'CB-ACCESS-SIGN': signature,
+    'CB-ACCESS-TIMESTAMP': str(timestamp),
+    'CB-ACCESS-CLIENT-ID': client_id,
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+print(response.json())

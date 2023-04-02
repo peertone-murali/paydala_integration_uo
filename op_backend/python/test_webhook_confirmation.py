@@ -6,8 +6,8 @@ from signedcreds import *
 
 API_SECRET_KEY = SECRET_KEY
 
-#baseUrl = "https://5cb6-49-207-225-253.in.ngrok.io"
-baseUrl = "http://34.171.255.136:8000"
+#baseUrl = "http://localhost:8000"
+baseUrl = "http://localhost:8000"
 payload = {
     "email": "john.smith@demora.org", 
     "amount": "10.0", 

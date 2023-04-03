@@ -2,12 +2,15 @@ import 'dart:convert';
 
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
 import 'package:op_app_flutter/src/payload.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
+import 'package:op_app_flutter/src/xfr_request.dart';
+import 'package:op_app_flutter/src/xfr_response.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
 
     return /* isIOS
         ? CupertinoApp(
-            title: 'Wallet App',
+        Wallet App',
             theme: CupertinoThemeData(
               primaryColor: Colors.blue,
             ),
@@ -46,6 +49,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Map<int, int> usdToCoins = {};
+int coinBalance = 0;
+
 class WalletHomePageWidget extends StatefulWidget {
   const WalletHomePageWidget({Key? key}) : super(key: key);
 
@@ -53,11 +59,7 @@ class WalletHomePageWidget extends StatefulWidget {
   _WalletHomePageState createState() => _WalletHomePageState();
 }
 
-Map<int, int> usdToCoins = {};
-
 class _WalletHomePageState extends State<WalletHomePageWidget> {
-  // int balance = 1500;
-  static int balance = 0;
   static TransactionResponse? txnResponse;
 
   void processTransaction(Object txnObject) {
@@ -72,7 +74,7 @@ class _WalletHomePageState extends State<WalletHomePageWidget> {
       TransactionDetails txnDetails = txnObject;
       if (txnDetails.status == "success") {
         try {
-          balance += usdToCoins[txnDetails.amount.toInt()]!;
+          coinBalance += usdToCoins[txnDetails.amount.toInt()]!;
         } catch (e) {
           pdPrint("Error: $e");
         }
@@ -102,7 +104,7 @@ class _WalletHomePageState extends State<WalletHomePageWidget> {
             ),
             SizedBox(height: 16.0),
             Text(
-              'Coins $balance',
+              'Coins $coinBalance',
               style: TextStyle(
                 fontSize: 36.0,
                 fontWeight: FontWeight.bold,
@@ -138,7 +140,7 @@ class _WalletHomePageState extends State<WalletHomePageWidget> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        WithdrawScreen(balance: balance.toDouble()),
+                        WithdrawScreen(balance: coinBalance.toDouble()),
                   ),
                 );
               },
@@ -297,15 +299,262 @@ class PaydalaWithdrawScreen extends StatelessWidget {
   }
 }
 
-class WithdrawScreen extends StatelessWidget {
+// class WithdrawScreen extends StatelessWidget {
+//   final double balance;
+
+//   const WithdrawScreen({super.key, required this.balance});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     TextEditingController controller = TextEditingController(text: '0');
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Withdraw'),
+//       ),
+//       body: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           children: [
+//             Text(
+//               'Balance',
+//               style: TextStyle(
+//                 fontSize: 24.0,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             Text(
+//               'Coins ${balance.toStringAsFixed(0)}',
+//               style: TextStyle(
+//                 fontSize: 36.0,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             SizedBox(height: 20.0),
+//             Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 Row(
+//                   children: [
+//                     Text(
+//                       'Withdraw Coins',
+//                       style: TextStyle(
+//                         fontSize: 24.0,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     SizedBox(width: 8.0),
+//                     Expanded(
+//                       child: TextField(
+//                         controller: controller,
+//                         decoration: InputDecoration(
+//                           border: OutlineInputBorder(),
+//                           labelText: 'Enter coins',
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(height: 16.0),
+//                 Text(
+//                   '(equivalent to USD 30)',
+//                   style: TextStyle(
+//                     fontSize: 16.0,
+//                     fontStyle: FontStyle.italic,
+//                   ),
+//                 ),
+//                 SizedBox(height: 16.0),
+//                 Text(
+//                   'While withdrawing money through Paydala wallet, the same wallet / identity (email) used during the first deposit will be used.',
+//                   // 'To withdraw money through Paydala wallet, you need to log in to the Paydala wallet account in the next step. If you do not have a Paydala wallet account, you are required to register using the same email that you used to deposit. You will not be allowed to withdraw as a guest.',
+//                   style: TextStyle(fontSize: 16.0),
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 32.0),
+//             ElevatedButton(
+//               onPressed: () async {
+//                 String withdrawalAmount =
+//                     '10'; // get the withdrawal amount from the text field
+
+//                 String url =
+//                     "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
+//                 showBlockingDialog(context, "Paydala", "Not yet integrated");
+//               },
+//               child: Text('Withdraw'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class WithdrawScreen extends StatefulWidget {
+//   final double balance;
+
+//   const WithdrawScreen({super.key, required this.balance});
+
+//   @override
+//   _WithdrawScreenState createState() => _WithdrawScreenState();
+// }
+
+// class _WithdrawScreenState extends State<WithdrawScreen> {
+//   TextEditingController controller = TextEditingController(text: '0');
+//   int withdrawalAmount = 0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     controller.addListener(() {
+//       String text = controller.text;
+//       if (text.isNotEmpty) {
+//         try {
+//           int value = int.parse(text);
+//           if (value >= 0) {
+//             withdrawalAmount = value;
+//           }
+//         } catch (e) {
+//           withdrawalAmount = 0;
+//         }
+//       } else {
+//         withdrawalAmount = 0;
+//       }
+//       setState(() {});
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Withdraw'),
+//       ),
+//       body: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           children: [
+//             Text(
+//               'Balance',
+//               style: TextStyle(
+//                 fontSize: 24.0,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             Text(
+//               'Coins ${widget.balance.toStringAsFixed(0)}',
+//               style: TextStyle(
+//                 fontSize: 36.0,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             SizedBox(height: 20.0),
+//             Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 Row(
+//                   children: [
+//                     Text(
+//                       'Withdraw Coins',
+//                       style: TextStyle(
+//                         fontSize: 24.0,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     SizedBox(width: 8.0),
+//                     Expanded(
+//                       child: TextField(
+//                         controller: controller,
+//                         decoration: InputDecoration(
+//                           border: OutlineInputBorder(),
+//                           labelText: 'Enter coins',
+//                         ),
+//                         keyboardType: TextInputType.number,
+//                         inputFormatters: [
+//                           FilteringTextInputFormatter.allow(RegExp(r'^\d+')),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 SizedBox(height: 16.0),
+//                 Text(
+//                   '(equivalent to USD ${withdrawalAmount / 100})',
+//                   style: TextStyle(
+//                     fontSize: 16.0,
+//                     fontStyle: FontStyle.italic,
+//                   ),
+//                 ),
+//                 SizedBox(height: 16.0),
+//                 Text(
+//                   'While withdrawing money through Paydala wallet, the same wallet / identity (email) used during the first deposit will be used.',
+//                   // 'To withdraw money through Paydala wallet, you need to log in to the Paydala wallet account in the next step. If you do not have a Paydala wallet account, you are required to register using the same email that you used to deposit. You will not be allowed to withdraw as a guest.',
+//                   style: TextStyle(fontSize: 16.0),
+//                   textAlign: TextAlign.center,
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 32.0),
+//             ElevatedButton(
+//               onPressed: () async {
+//                 String url =
+//                     "https://dev-widget.paydala.com/?environment=development&amount=$withdrawalAmount";
+//                 showBlockingDialog(context, "Paydala", "Not yet integrated");
+//               },
+//               child: Text('Withdraw'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class WithdrawScreen extends StatefulWidget {
   final double balance;
 
   const WithdrawScreen({super.key, required this.balance});
 
   @override
-  Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController(text: '0');
+  _WithdrawScreenState createState() => _WithdrawScreenState();
+}
 
+class _WithdrawScreenState extends State<WithdrawScreen> {
+  TextEditingController controller = TextEditingController(text: '0');
+  int withdrawalAmount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      String text = controller.text;
+      if (text.isNotEmpty) {
+        try {
+          int value = int.parse(text);
+          if (value >= 0) {
+            withdrawalAmount = value;
+            HapticFeedback.mediumImpact();
+          }
+        } catch (e) {
+          withdrawalAmount = 0;
+          HapticFeedback.lightImpact();
+        }
+      } else {
+        withdrawalAmount = 0;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Withdraw'),
@@ -324,7 +573,7 @@ class WithdrawScreen extends StatelessWidget {
               ),
             ),
             Text(
-              'Coins ${balance.toStringAsFixed(0)}',
+              'Coins ${coinBalance.toStringAsFixed(0)}',
               style: TextStyle(
                 fontSize: 36.0,
                 fontWeight: FontWeight.bold,
@@ -350,15 +599,19 @@ class WithdrawScreen extends StatelessWidget {
                         controller: controller,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Enter a number',
+                          labelText: 'Enter coins',
                         ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d+')),
+                        ],
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  '(equivalent in USD 30)',
+                  '(equivalent to USD ${withdrawalAmount / 100})',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontStyle: FontStyle.italic,
@@ -366,7 +619,7 @@ class WithdrawScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  'While withdrawing money through Paydala wallet, the same wallet / identity (email) used during the first deposit will be used.',
+                  'While withdrawing money through Paydala, the wallet with the same identity (email) specified during the first deposit will be used.',
                   // 'To withdraw money through Paydala wallet, you need to log in to the Paydala wallet account in the next step. If you do not have a Paydala wallet account, you are required to register using the same email that you used to deposit. You will not be allowed to withdraw as a guest.',
                   style: TextStyle(fontSize: 16.0),
                   textAlign: TextAlign.center,
@@ -376,11 +629,28 @@ class WithdrawScreen extends StatelessWidget {
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () async {
-                String withdrawalAmount =
-                    '10'; // get the withdrawal amount from the text field
-                String url =
-                    "https://dev-widget.paydala.com/?environment=development"; // construct the URL with the withdrawal amount parameter
-                showBlockingDialog(context, "Paydala", "Not yet integrated");
+                if (withdrawalAmount > coinBalance) {
+                  showMessageDialog(context, "Paydala", "Insufficient balance");
+                  return;
+                }
+                TransferRequest request = createRequest();
+                request.payload.amount = withdrawalAmount / 100;
+                request.payload.requestId = generateUuid();
+                TransferResponse? response = await sendMoney(request);
+                if (response != null && response.success) {
+                  coinBalance -= withdrawalAmount;
+                  showMessageDialog(
+                      context, "Paydala", "Withdrawal successful");
+
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/wallet',
+                    (route) => false,
+                  ).then((value) => setState(() {}));
+                } else {
+                  showMessageDialog(context, "Paydala", "Withdrawal failed");
+                }
+                // showBlockingDialog(context, "Paydala", "Not yet integrated");
               },
               child: Text('Withdraw'),
             ),

@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:async';
+// import 'package:crypto/crypto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
-// import 'package:op_app_flutter/src/txn_response.dart';
+import 'package:op_app_flutter/src/xfr_response.dart';
+import 'package:op_app_flutter/src/xfr_request.dart';
 import 'package:op_app_flutter/src/utils.dart';
 
 var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
@@ -72,7 +76,7 @@ SignedCreds getSignedCreds(String payload) {
   }
 }
 
-TransactionResponse? getTxnStatusLocal1(int refType, String txnRef) {
+TransactionResponse? getTxnStatusLocal(int refType, String txnRef) {
   final body = jsonEncode({'refType': refType, 'txnRef': txnRef});
   final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
   final headers = {
@@ -83,7 +87,7 @@ TransactionResponse? getTxnStatusLocal1(int refType, String txnRef) {
     'Content-Type': 'application/json'
   };
 
-  print("headers = ${jsonEncode(headers)} and body = $body");
+  pdPrint("headers = ${jsonEncode(headers)} and body = $body");
 
   try {
     final response = http
@@ -118,50 +122,71 @@ TransactionResponse? getTxnStatusLocal1(int refType, String txnRef) {
   return null;
 }
 
-TransactionResponse? getTxnStatusLocal(int refType, String txnRef) {
-  final body = jsonEncode({'refType': refType, 'txnRef': txnRef});
-  // final headers = {
-  //   'CB-ACCESS-SIGN': generateHmacSha256Signature(body, SECRET),
-  //   'CB-ACCESS-TIMESTAMP': DateTime.now().millisecondsSinceEpoch,
-  //   'CB-ACCESS-CLIENT-ID': CLIENT_ID,
-  //   'Content-Type': 'application/json'
-  // };
-  final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
-  final headers = {
-    'CB-ACCESS-SIGN':
-        "f01dba102347f5665a9c76bc97bfaada71318c38e8ee107ccf9035f366b93431",
-    //generateHmacSha256Signature("$timestamp$CLIENT_ID", SECRET),
-    'CB-ACCESS-TIMESTAMP':
-        1679926141737, //timestamp, //.toUtc().toIso8601String(), //timestamp,
+Future<TransferResponse?> sendMoney(TransferRequest transaction) async {
+  // String apiUrl = 'https://dev-api.paydala.com/transactions/v1/sendMoney';
+  // String clientId = '425c10d5cb874f6c986ffd47b0411440';
+  // String clientSecret = 'put-your-client-secret-here'; // replace with your actual client secret
+  final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
+  // String body = json.encode({
+  //   'client_id': CLIENT_ID,
+  //   'category_id': 1,
+  //   'region': 'New York',
+  //   'timestamp': timestamp,
+  //   'payload': transaction.toJson(),
+  // });
+  TransferResponse? result;
+  String jsonString = json.encode(transaction.toJson());
+  String signature = generateHmacSha256Signature("$timestamp$jsonString",
+      SECRET); //generateSignature(clientSecret, timestamp, body);
+  Map<String, String> headers = {
     'CB-ACCESS-CLIENT-ID': CLIENT_ID,
-    'Content-Type': 'application/json'
+    'CB-ACCESS-TIMESTAMP': timestamp,
+    'CB-ACCESS-SIGN': signature,
+    'Content-Type': 'application/json',
   };
+  final response = await http.post(
+      Uri.parse("$pdBaseUrl/transactions/v1/sendMoney"),
+      headers: headers,
+      body: jsonString);
 
-  print("headers = ${jsonEncode(headers)} and body = $body");
+  if (response.statusCode == 200) {
+    result = TransferResponse.fromJson(json.decode(response.body));
+    pdPrint('Transaction was successful');
+  } else {
+    result = TransferResponse(
+      success: false,
+      error: response.body,
+      response: Response(amount: 0, txnRef: "", currencyId: 0),
+    );
+    pdPrint('Transaction failed with status code ${response.statusCode}');
+  }
 
-  final dio = Dio();
-  final response = dio
-      .post("$pdBaseUrl/transactions/status",
-          data: body, options: Options(headers: headers))
-      .then((response) {
-    pdPrint("getTxnStatusLocal: ${response.data}");
-    if (response.statusCode == 200) {
-      // The API call was successful
-      try {
-        var payloadMap = jsonDecode(response.data);
-        return TransactionResponse.fromJson(payloadMap);
-      } catch (e) {
-        pdPrint("Error processing response: $e");
-        rethrow;
-      }
-    } else {
-      // There was an error
-      print(
-          'httpStatus: ${response.statusCode}, Error : ${response.statusMessage}');
-      return null;
-    }
-  });
-
-  print("it should not come here");
-  return null;
+  return result;
 }
+
+// Future<http.Response> postJson(String url, Map<String, dynamic> body) async {
+//   http.Response response = await http.post(
+//     Uri.parse(url),
+//     headers: <String, String>{
+//       'Content-Type': 'application/json; charset=UTF-8',
+//     },
+//     body: jsonEncode(body),
+//   );
+//   if (response.statusCode == 200) {
+//     return response;
+//   } else {
+//     throw Exception('Failed to load data');
+//   }
+// }
+
+// void main() async {
+//   String url = 'https://example.com/api';
+//   Map<String, dynamic> body = {'key1': 'value1', 'key2': 'value2'};
+
+//   try {
+//     http.Response response = await postJson(url, body);
+//     print(response.body);
+//   } catch (error) {
+//     print('HTTP request failed with error: $error');
+//   }
+// }

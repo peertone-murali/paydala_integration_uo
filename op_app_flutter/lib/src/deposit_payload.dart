@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'payload.g.dart';
+part 'deposit_payload.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Payload {
+class DepositPayload {
   String requestId;
   String customerId;
   DefaultUser defaultUser;
@@ -13,7 +13,7 @@ class Payload {
   bool isWebView;
   UserFlow userFlow;
 
-  Payload(
+  DepositPayload(
       {required this.requestId,
       required this.customerId,
       required this.defaultUser,
@@ -22,10 +22,10 @@ class Payload {
       required this.isWebView,
       required this.userFlow});
 
-  factory Payload.fromJson(Map<String, dynamic> json) =>
-      _$PayloadFromJson(json);
+  factory DepositPayload.fromJson(Map<String, dynamic> json) =>
+      _$DepositPayloadFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PayloadToJson(this);
+  Map<String, dynamic> toJson() => _$DepositPayloadToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -150,12 +150,12 @@ var payloadJson = '''
 }
 ''';
 
-Payload createPayload() {
+DepositPayload createDepositPayload() {
   Map<String, dynamic> payloadMap = jsonDecode(payloadJson);
-  var payload = Payload.fromJson(payloadMap);
+  var payload = DepositPayload.fromJson(payloadMap);
   return payload;
 }
 
-String getJsonString(Payload payload) {
+String getJsonString(DepositPayload payload) {
   return jsonEncode(payload);
 }

@@ -8,15 +8,19 @@
 class SignedCreds {
   final String creds;
   final String signature;
+  final int timestamp; // = DateTime.now().millisecondsSinceEpoch;
 
-  SignedCreds(this.creds, this.signature);
+  SignedCreds(
+      {required this.creds, required this.signature, required this.timestamp});
 
   SignedCreds.fromJson(Map<String, dynamic> json)
       : creds = json['creds'],
-        signature = json['signature'];
+        signature = json['signature'],
+        timestamp = json['timestamp'];
 
   Map<String, dynamic> toJson() => {
         'creds': creds,
         'signature': signature,
+        'timestamp': timestamp,
       };
 }

@@ -1,36 +1,37 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:op_app_flutter/src/deposit_payload.dart';
 
-part 'xfr_request.g.dart';
-
-@JsonSerializable(explicitToJson: true)
-class TransferRequest {
-  @JsonKey(name: 'client_id')
-  final String clientId;
-  @JsonKey(name: 'category_id')
-  final int categoryId;
-  final String region;
-  final String timestamp;
-  @JsonKey(name: 'payload')
-  final XfrPayload payload;
-
-  TransferRequest({
-    required this.clientId,
-    required this.categoryId,
-    required this.region,
-    required this.timestamp,
-    required this.payload,
-  });
-
-  factory TransferRequest.fromJson(Map<String, dynamic> json) =>
-      _$TransferRequestFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TransferRequestToJson(this);
-}
+part 'withdraw_payload.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class XfrPayload {
+// class TransferRequest {
+//   @JsonKey(name: 'client_id')
+//   final String clientId;
+//   @JsonKey(name: 'category_id')
+//   final int categoryId;
+//   final String region;
+//   final String timestamp;
+//   @JsonKey(name: 'payload')
+//   final WithdrawPayload payload;
+
+//   TransferRequest({
+//     required this.clientId,
+//     required this.categoryId,
+//     required this.region,
+//     required this.timestamp,
+//     required this.payload,
+//   });
+
+//   factory TransferRequest.fromJson(Map<String, dynamic> json) =>
+//       _$TransferRequestFromJson(json);
+
+//   Map<String, dynamic> toJson() => _$TransferRequestToJson(this);
+// }
+
+@JsonSerializable(explicitToJson: true)
+class WithdrawPayload {
   String requestId;
   String customerId;
   final String email;
@@ -42,7 +43,7 @@ class XfrPayload {
   @JsonKey(name: 'accountDetails')
   final AccountDetails accountDetails;
 
-  XfrPayload({
+  WithdrawPayload({
     required this.requestId,
     required this.customerId,
     required this.email,
@@ -52,10 +53,10 @@ class XfrPayload {
     required this.accountDetails,
   });
 
-  factory XfrPayload.fromJson(Map<String, dynamic> json) =>
-      _$XfrPayloadFromJson(json);
+  factory WithdrawPayload.fromJson(Map<String, dynamic> json) =>
+      _$WithdrawPayloadFromJson(json);
 
-  Map<String, dynamic> toJson() => _$XfrPayloadToJson(this);
+  Map<String, dynamic> toJson() => _$WithdrawPayloadToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -89,11 +90,6 @@ class AccountDetails {
 }
 
 const requestJson = """{
-  "client_id": "425c10d5cb874f6c986ffd47b0411440",
-  "category_id": 1,
-  "region": "New York",
-  "timestamp": "",
-  "payload": {
     "requestId": "66623bfe-cdae-11ed-afa1-0242ac120002",
     "customerId": "123456",
     "email": "john.smith@demora.org",
@@ -108,9 +104,8 @@ const requestJson = """{
       "swiftCode": "",
       "accountType": "savings"
     }
-  }
 }""";
 
-TransferRequest createRequest() {
-  return TransferRequest.fromJson(jsonDecode(requestJson));
+WithdrawPayload createWithdrawPayload() {
+  return WithdrawPayload.fromJson(jsonDecode(requestJson));
 }

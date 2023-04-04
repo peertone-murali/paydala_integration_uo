@@ -1,23 +1,23 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'xfr_response.g.dart';
+part 'withdraw_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class TransferResponse {
+class WithdrawResponse {
   final bool success;
   final String? error;
   final Response? response;
 
-  TransferResponse({
+  WithdrawResponse({
     required this.success,
     this.error,
     this.response,
   });
 
-  factory TransferResponse.fromJson(Map<String, dynamic> json) =>
-      _$TransferResponseFromJson(json);
+  factory WithdrawResponse.fromJson(Map<String, dynamic> json) =>
+      _$WithdrawResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TransferResponseToJson(this);
+  Map<String, dynamic> toJson() => _$WithdrawResponseToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)

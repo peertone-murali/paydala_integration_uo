@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'xfr_response.dart';
+part of 'withdraw_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransferResponse _$TransferResponseFromJson(Map<String, dynamic> json) =>
-    TransferResponse(
+WithdrawResponse _$WithdrawResponseFromJson(Map<String, dynamic> json) =>
+    WithdrawResponse(
       success: json['success'] as bool,
       error: json['error'] as String?,
       response: json['response'] == null
@@ -15,7 +15,7 @@ TransferResponse _$TransferResponseFromJson(Map<String, dynamic> json) =>
           : Response.fromJson(json['response'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$TransferResponseToJson(TransferResponse instance) =>
+Map<String, dynamic> _$WithdrawResponseToJson(WithdrawResponse instance) =>
     <String, dynamic>{
       'success': instance.success,
       'error': instance.error,

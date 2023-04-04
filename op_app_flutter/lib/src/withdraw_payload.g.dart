@@ -1,30 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'xfr_request.dart';
+part of 'withdraw_payload.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransferRequest _$TransferRequestFromJson(Map<String, dynamic> json) =>
-    TransferRequest(
-      clientId: json['client_id'] as String,
-      categoryId: json['category_id'] as int,
-      region: json['region'] as String,
-      timestamp: json['timestamp'] as String,
-      payload: XfrPayload.fromJson(json['payload'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$TransferRequestToJson(TransferRequest instance) =>
-    <String, dynamic>{
-      'client_id': instance.clientId,
-      'category_id': instance.categoryId,
-      'region': instance.region,
-      'timestamp': instance.timestamp,
-      'payload': instance.payload.toJson(),
-    };
-
-XfrPayload _$XfrPayloadFromJson(Map<String, dynamic> json) => XfrPayload(
+WithdrawPayload _$WithdrawPayloadFromJson(Map<String, dynamic> json) =>
+    WithdrawPayload(
       requestId: json['requestId'] as String,
       customerId: json['customerId'] as String,
       email: json['email'] as String,
@@ -35,7 +18,7 @@ XfrPayload _$XfrPayloadFromJson(Map<String, dynamic> json) => XfrPayload(
           json['accountDetails'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$XfrPayloadToJson(XfrPayload instance) =>
+Map<String, dynamic> _$WithdrawPayloadToJson(WithdrawPayload instance) =>
     <String, dynamic>{
       'requestId': instance.requestId,
       'customerId': instance.customerId,

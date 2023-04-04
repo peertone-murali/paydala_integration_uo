@@ -18,6 +18,11 @@ String getCurrentTimestamp() {
   return now.toUtc().toIso8601String();
 }
 
+String getIso8601Timestamp(int milliseconds) {
+  var now = DateTime.fromMillisecondsSinceEpoch(milliseconds);
+  return "${now.toIso8601String()}Z";
+}
+
 String generateHmacSha256Signature(String message, String secret) {
   var key = utf8.encode(secret);
   var bytes = utf8.encode(message);

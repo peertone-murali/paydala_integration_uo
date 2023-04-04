@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'payload.dart';
+part of 'deposit_payload.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Payload _$PayloadFromJson(Map<String, dynamic> json) => Payload(
+DepositPayload _$DepositPayloadFromJson(Map<String, dynamic> json) =>
+    DepositPayload(
       requestId: json['requestId'] as String,
       customerId: json['customerId'] as String,
       defaultUser:
@@ -18,7 +19,8 @@ Payload _$PayloadFromJson(Map<String, dynamic> json) => Payload(
       userFlow: UserFlow.fromJson(json['userFlow'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$PayloadToJson(Payload instance) => <String, dynamic>{
+Map<String, dynamic> _$DepositPayloadToJson(DepositPayload instance) =>
+    <String, dynamic>{
       'requestId': instance.requestId,
       'customerId': instance.customerId,
       'defaultUser': instance.defaultUser.toJson(),

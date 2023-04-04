@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:async';
 // import 'package:crypto/crypto.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 // import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
-import 'package:op_app_flutter/src/xfr_response.dart';
-import 'package:op_app_flutter/src/xfr_request.dart';
+// import 'package:op_app_flutter/src/xfr_response.dart';
+// import 'package:op_app_flutter/src/withdraw_payload.dart';
 import 'package:op_app_flutter/src/utils.dart';
+import 'package:op_app_flutter/src/withdraw_payload.dart';
+import 'package:op_app_flutter/src/withdraw_response.dart';
 
 var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
 var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
@@ -29,7 +31,7 @@ var pdBaseUrl = "https://dev-api.paydala.com";
  * implementations.
  */
 
-SignedCreds getSignedCredsServer(String payload) {
+SignedCreds getSignedCredsServer(String payload, bool addtimestamp) {
   final headers = {'Content-Type': 'application/json'};
 // Make the POST request
   http
@@ -40,38 +42,53 @@ SignedCreds getSignedCredsServer(String payload) {
       // The API call was successful
       // print(response.body);
       var payloadMap = jsonDecode(response.body);
-      return SignedCreds(payloadMap['creds'], payloadMap['signature']);
+      return SignedCreds(
+          creds: payloadMap['creds'],
+          signature: payloadMap['signature'],
+          timestamp: payloadMap['timestamp']);
     } else {
       // There was an error
-      print('Error: ${response.reasonPhrase}');
+      pdPrint('Error: ${response.reasonPhrase}');
     }
   }).catchError((error) {
     // There was an error in making the request
-    print('Error: $error');
+    pdPrint('Error: $error');
   });
-  return SignedCreds("", "");
+  return SignedCreds(creds: "", signature: "", timestamp: 0);
 }
 
-SignedCreds getSignedCredsLocal(String payload) {
-  Map<String, dynamic> payloadMap = jsonDecode(payload);
+SignedCreds getSignedCredsLocal(String payload, bool addtimestamp) {
+  Map<String, dynamic>? payloadMap;
+
+  try {
+    payloadMap = jsonDecode(payload);
+  } catch (e) {
+    pdPrint("Error in decoding payload: $e");
+    return SignedCreds(creds: "", signature: "", timestamp: 0);
+  }
+  var timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
   Map<String, dynamic> credsMap = {
-    // "requestId": generateUuid(),
-    // "customerId": "1", // replace with customer id
     "client_id": CLIENT_ID,
     "category_id": 1,
     "region": "New York",
-    "timestamp": getCurrentTimestamp(),
+    "timestamp": getIso8601Timestamp(timestamp),
     "payload": payloadMap
   };
   var creds = jsonEncode(credsMap);
-  return SignedCreds(creds, generateHmacSha256Signature(creds, SECRET));
+
+  return SignedCreds(
+      creds: creds,
+      signature: addtimestamp
+          ? generateHmacSha256Signature("${timestamp.toString()}$creds", SECRET)
+          : generateHmacSha256Signature(creds, SECRET),
+      timestamp: timestamp);
 }
 
-SignedCreds getSignedCreds(String payload) {
+SignedCreds getSignedCreds(String payload, bool addtimestamp) {
   if (kDebugMode) {
-    return getSignedCredsLocal(payload);
+    return getSignedCredsLocal(payload, addtimestamp);
   } else {
-    SignedCreds? signedCreds = getSignedCredsServer(payload);
+    SignedCreds? signedCreds = getSignedCredsServer(payload, addtimestamp);
     return signedCreds;
   }
 }
@@ -110,50 +127,53 @@ TransactionResponse? getTxnStatusLocal(int refType, String txnRef) {
         }
       } else {
         // There was an error
-        print('Error: ${response.reasonPhrase}');
-        return null;
+        pdPrint('Error: ${response.reasonPhrase}');
+        // return null;
       }
     });
   } catch (e) {
     pdPrint("Error processing response: $e");
     rethrow;
   }
-  print("it should not come here");
+  // print("it should not come here");
   return null;
 }
 
-Future<TransferResponse?> sendMoney(TransferRequest transaction) async {
-  // String apiUrl = 'https://dev-api.paydala.com/transactions/v1/sendMoney';
-  // String clientId = '425c10d5cb874f6c986ffd47b0411440';
-  // String clientSecret = 'put-your-client-secret-here'; // replace with your actual client secret
-  final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
-  // String body = json.encode({
-  //   'client_id': CLIENT_ID,
-  //   'category_id': 1,
-  //   'region': 'New York',
-  //   'timestamp': timestamp,
-  //   'payload': transaction.toJson(),
-  // });
-  TransferResponse? result;
-  String jsonString = json.encode(transaction.toJson());
-  String signature = generateHmacSha256Signature("$timestamp$jsonString",
-      SECRET); //generateSignature(clientSecret, timestamp, body);
+Future<WithdrawResponse?> sendMoney(WithdrawPayload payload) async {
+  if (kDebugMode) {
+    return sendMoneyLocal(payload);
+  } else {
+    return null;
+  }
+}
+
+Future<WithdrawResponse?> sendMoneyLocal(WithdrawPayload payload) async {
+  // final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
+  WithdrawResponse? result;
+
+  String jsonString = json.encode(payload.toJson());
+  SignedCreds signedCreds = getSignedCreds(jsonString, true);
+
   Map<String, String> headers = {
     'CB-ACCESS-CLIENT-ID': CLIENT_ID,
-    'CB-ACCESS-TIMESTAMP': timestamp,
-    'CB-ACCESS-SIGN': signature,
+    'CB-ACCESS-TIMESTAMP': signedCreds.timestamp.toString(),
+    'CB-ACCESS-SIGN': signedCreds.signature,
+    // generateHmacSha256Signature(message, SECRET), //signedCreds.signature,
     'Content-Type': 'application/json',
   };
+
+  // var headerStr = jsonEncode(headers);
+
   final response = await http.post(
       Uri.parse("$pdBaseUrl/transactions/v1/sendMoney"),
       headers: headers,
-      body: jsonString);
+      body: signedCreds.creds);
 
   if (response.statusCode == 200) {
-    result = TransferResponse.fromJson(json.decode(response.body));
+    result = WithdrawResponse.fromJson(json.decode(response.body));
     pdPrint('Transaction was successful');
   } else {
-    result = TransferResponse(
+    result = WithdrawResponse(
       success: false,
       error: response.body,
       response: Response(amount: 0, txnRef: "", currencyId: 0),
@@ -163,6 +183,7 @@ Future<TransferResponse?> sendMoney(TransferRequest transaction) async {
 
   return result;
 }
+
 
 // Future<http.Response> postJson(String url, Map<String, dynamic> body) async {
 //   http.Response response = await http.post(

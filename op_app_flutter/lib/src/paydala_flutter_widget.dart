@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:op_app_flutter/src/channel_event.dart';
-import 'package:op_app_flutter/src/payload.dart';
+// import 'package:op_app_flutter/src/deposit_payload.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
@@ -168,10 +168,11 @@ class _PaydalaFlutterWidgetState extends State<PaydalaFlutterWidget> {
           }
 
           final TransactionDetails txnDetail = createTxnDetails(txnResponse);
-          final Payload payload =
-              Payload.fromJson(jsonDecode(widget.signedCreds.creds)['payload']);
+          // final Payload payload =
+          //     Payload.fromJson(jsonDecode(widget.signedCreds.creds)['payload']);
 
-          txnDetail.amount = payload.predefinedAmount.values;
+          // txnDetail.amount = payload.predefinedAmount.values;
+          txnDetail.amount = chEvent!.payload.amount;
           widget.txnResponse?.txnDetails.add(txnDetail);
 
           widget.onTransaction(txnDetail);

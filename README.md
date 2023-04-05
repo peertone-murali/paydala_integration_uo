@@ -20,7 +20,7 @@ The diagram highlights the sequence of operations that are implemented in the re
 ## Withdraw sequence
 Sequence diagram for withdrawal is given below...
 
-![Image alt text](./Paydala withdraw flo w.svg)
+![Image alt text](https://github.com/PaydalaInc/paydala_integration_uo/blob/70afa6dec27225768252ff5bb07ae489f3fda60b/Paydala%20withdraw%20flow.svg)
  
 Withdrawal is achieved using Paydala API's that can be called from the Operator backend. Unlike Deposit, it does not require the Paydala Wallet UI. The amount to be withdrawn is transferred directly from Operator account on Paydala to the player's wallet on Paydala through a call to a single API.
 

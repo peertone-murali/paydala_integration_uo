@@ -1,17 +1,13 @@
 import 'dart:convert';
 
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:op_app_flutter/src/deposit_payload.dart';
 import 'package:op_app_flutter/src/op_server_api.dart';
 import 'package:op_app_flutter/src/paydala_flutter_widget.dart';
-// import 'package:op_app_flutter/src/deposit_payload.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
 import 'package:op_app_flutter/src/utils.dart';
-import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/withdraw_payload.dart';
-// import 'package:op_app_flutter/src/withdraw_response.dart';
 
 void main() => runApp(MyApp());
 
@@ -64,12 +60,9 @@ class _WalletHomePageState extends State<WalletHomePageWidget> {
   static TransactionResponse? txnResponse;
 
   void processTransaction(Object txnObject) {
-    // var txnAmount = 0.0;
     if (txnObject is TransactionResponse) {
       txnResponse = txnObject;
-      // for (var txnDetails in txnResponse.txnDetails) {
-      //   if (txnDetails.status == "success") txnAmount += txnDetails.amount;
-      // }
+
       pdPrint("TransactionResponse: ${txnResponse?.toJson()}");
     } else if (txnObject is TransactionDetails) {
       TransactionDetails txnDetails = txnObject;
@@ -159,22 +152,6 @@ class _WalletHomePageState extends State<WalletHomePageWidget> {
   }
 }
 
-// class PaydalaDepositScreen extends StatelessWidget {
-//   const PaydalaDepositScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Deposit using Paydala'),
-//       ),
-//       body: Center(
-//         child: Text('Paydala Flutter widget for deposit'),
-//       ),
-//     );
-//   }
-// }
-
 class OperatorDepositScreen extends StatefulWidget {
   final ValueChanged<Object> onTransaction;
   const OperatorDepositScreen({super.key, required this.onTransaction});
@@ -260,20 +237,19 @@ class _OperatorDepositScreenState extends State<OperatorDepositScreen> {
                   }
                   payload.customerId = '123456';
                   payload.requestId = generateUuid();
-                  SignedCreds signedCreds =
-                      getSignedCreds(jsonEncode(payload), false);
+                  // SignedCreds signedCreds =
+                  //     getSignedCreds(jsonEncode(payload), false);
 
                   // payload.predefinedAmount.values = 30;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PaydalaFlutterWidget(
-                        onTransaction: widget.onTransaction,
-                        title: 'Paydala Deposit',
-                        url:
-                            "https://dev-widget.paydala.com?environment=development",
-                        signedCreds: signedCreds,
-                      ),
+                          onTransaction: widget.onTransaction,
+                          title: 'Paydala Deposit',
+                          url:
+                              "https://dev-widget.paydala.com?environment=development",
+                          payload: jsonEncode(payload)),
                     ),
                   );
                 }
@@ -311,7 +287,7 @@ class WithdrawScreen extends StatefulWidget {
 }
 
 class _WithdrawScreenState extends State<WithdrawScreen> {
-  TextEditingController controller = TextEditingController(text: '0');
+  TextEditingController controller = TextEditingController(text: '');
   int withdrawalAmount = 0;
 
   @override

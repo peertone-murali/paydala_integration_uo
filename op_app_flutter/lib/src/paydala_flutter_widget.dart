@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:op_app_flutter/src/channel_event.dart';
+import 'package:op_app_flutter/src/op_server_api.dart';
 // import 'package:op_app_flutter/src/deposit_payload.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
@@ -14,6 +15,7 @@ class PaydalaFlutterWidget extends StatefulWidget {
   final ValueChanged<Object> onTransaction;
   final String title;
   final String url;
+  final String payload;
   late String requestId;
   late SignedCreds signedCreds;
   TransactionResponse? txnResponse;
@@ -22,7 +24,8 @@ class PaydalaFlutterWidget extends StatefulWidget {
       {required this.onTransaction,
       required this.title,
       required this.url,
-      required this.signedCreds}) {
+      required this.payload}) {
+    signedCreds = getSignedCreds(payload, false);
     txnResponse = createTxnResponse(signedCreds.creds);
     try {
       var credsMap = jsonDecode(signedCreds.creds);

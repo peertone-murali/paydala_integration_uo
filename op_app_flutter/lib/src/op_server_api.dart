@@ -1,21 +1,16 @@
 import 'dart:convert';
 import 'dart:async';
-// import 'package:crypto/crypto.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-// import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:op_app_flutter/src/signedcreds.dart';
 import 'package:op_app_flutter/src/txn_response.dart';
-// import 'package:op_app_flutter/src/xfr_response.dart';
-// import 'package:op_app_flutter/src/withdraw_payload.dart';
 import 'package:op_app_flutter/src/utils.dart';
 import 'package:op_app_flutter/src/withdraw_payload.dart';
 import 'package:op_app_flutter/src/withdraw_response.dart';
 
 var CLIENT_ID = "425c10d5cb874f6c986ffd47b0411440";
 var SECRET = "1fc2b5832bf04c5599476f24c8d86ab8";
-// Define the endpoint URL and the data to send in the request body
+
 const String opBaseUrl = 'http://localhost:8080/getSignedCreds';
 var pdBaseUrl = "https://dev-api.paydala.com";
 
@@ -141,7 +136,7 @@ TransactionResponse? getTxnStatusLocal(int refType, String txnRef) {
 
 Future<WithdrawResponse?> sendMoney(WithdrawPayload payload) async {
   if (kDebugMode) {
-    return sendMoneyLocal(payload);
+    return await sendMoneyLocal(payload);
   } else {
     return null;
   }

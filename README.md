@@ -12,7 +12,7 @@ Though details of Deposit and Withdraw sequence are provided in the following se
 
 Sequence diagram for Deposit flow is shown below...
 
-![Image alt text](./Paydala deposit flo w.svg)
+![Image alt text](https://github.com/PaydalaInc/paydala_integration_uo/blob/0b6a78ac027845b1149f52d00e89eefe3f0ca196/Paydala%20deposit%20flow.svg)
 
 The diagram highlights the sequence of operations that are implemented in the reference app. There are essentially three blocks of operation that need to be performed for the flow to be fully effective. The first block shows setting up of the webhook handler to receive transaction details during both deposit and withdrawal operations. While it is possible to receive transaction confirmation through the Paydala widget, it is not always reliable as the app could crash etc. which breaks the flow.  In such an event, webhook confirmation is a reliable way to capture transactions for later verification. The second block shows the Deposit flow that involves deposit of USD into Operator's Paydala account from the Player's Paydala wallet using player's Card or Bank accounts. The third block refers to two ways of handling errors. 
 

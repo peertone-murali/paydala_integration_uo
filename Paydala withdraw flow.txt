@@ -1,0 +1,64 @@
+@startuml Paydala integration
+title Paydala integration steps for withdraw
+
+ bottomparticipants
+participant "Operator App" as OpApp
+participant "Operator portal" as OpPortal
+participant "Operator Backend" as OpBackend
+participant "Paydala Flutter widget" as PaydalaWidget
+participant "Paydala Backend" as PaydalaBackend
+
+skinparam sequenceGroupBackgroundColor red
+
+group Setup webhook
+
+OpPortal->PaydalaBackend:subscribe(region, url) 
+activate PaydalaBackend
+OpPortal<--PaydalaBackend:return({subscription_object})
+deactivate PaydalaBackend
+
+end
+
+
+
+group   Widthdraw flow
+create PaydalaWidget
+'activate PaydalaWidget
+OpApp->PaydalaWidget:createPaydalaWidget()
+OpApp->PaydalaWidget:loginUser(userEmail)
+activate PaydalaWidget
+alt #lightGray user exists
+PaydalaWidget->PaydalaBackend:login
+activate PaydalaBackend
+
+PaydalaWidget<-PaydalaBackend:return(JWT)
+deactivate PaydalaBackend
+else if not, register user with the same userEmail
+
+PaydalaWidget->PaydalaBackend:register(userEmail)
+activate PaydalaBackend
+PaydalaWidget<-PaydalaBackend:return(JWT)
+deactivate PaydalaBackend
+end
+OpApp<--PaydalaWidget:return(JWT)
+deactivate PaydalaWidget
+OpApp->PaydalaWidget:destroyPaydalaWidget()
+deactivate PaydalaWidget
+destroy PaydalaWidget
+
+note over OpApp, OpBackend:verification JWT is used in the withdraw call.
+OpApp->OpBackend:withdraw(JWT,$amount)
+activate OpBackend
+OpBackend->PaydalaBackend:sendMoney(requestId, JWT, $amount)
+OpBackend<--PaydalaBackend:return(httpStatus=200, {requestId, txnRef})
+OpApp<--OpBackend:return(httpStatus=200)
+deactivate OpBackend
+end
+@enduml
+
+
+
+
+
+
+
